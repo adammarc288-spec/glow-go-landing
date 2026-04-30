@@ -644,6 +644,7 @@ function Landing() {
       <AnnouncementBar />
       <Header />
       <Hero onShopClick={scrollToProduct} />
+      <VideoShowcase onShopClick={scrollToProduct} />
       <GiftBanner onShopClick={scrollToProduct} />
 
       <Section id="kollektion">
