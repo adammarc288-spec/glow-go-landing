@@ -151,6 +151,47 @@ function Hero({ onShopClick }: { onShopClick: () => void }) {
   );
 }
 
+function VideoShowcase({ onShopClick }: { onShopClick: () => void }) {
+  return (
+    <Section id="video" className="bg-card/40">
+      <div className="text-center max-w-2xl mx-auto mb-10">
+        <span className="text-gold text-sm font-medium tracking-widest uppercase">
+          Live Demo
+        </span>
+        <h2 className="mt-2 font-serif text-4xl md:text-5xl tracking-tight">
+          Sieh Glow & Go™ in Aktion
+        </h2>
+        <p className="mt-4 text-foreground/70">
+          6 elegante Farben. Touchscreen-Fenster. RFID-Schutz. Alles in einer Tasche.
+        </p>
+      </div>
+
+      <div className="relative max-w-md mx-auto">
+        <div className="absolute -inset-6 bg-gradient-rose opacity-30 blur-3xl rounded-full pointer-events-none" />
+        <div className="relative aspect-square rounded-3xl overflow-hidden shadow-elegant border border-rose/30 bg-card">
+          <video
+            src="/product-video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="mt-8 text-center">
+          <Button
+            onClick={onShopClick}
+            className="h-13 px-8 py-3 rounded-full bg-cta hover:bg-cta/90 text-cta-foreground font-semibold shadow-elegant pulse-cta"
+          >
+            Jetzt deine Farbe wählen →
+          </Button>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 function GiftBanner({ onShopClick }: { onShopClick: () => void }) {
   const offers = [
     {
