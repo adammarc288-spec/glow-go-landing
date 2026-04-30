@@ -6,12 +6,12 @@ import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
 
 const colorSwatches: Record<string, { dot: string; emoji: string; isNew?: boolean }> = {
-  Rosa:    { dot: "bg-[oklch(0.78_0.06_15)]", emoji: "🌸" },
-  Beige:   { dot: "bg-[oklch(0.82_0.04_75)]", emoji: "🤍" },
+  Rosa:    { dot: "bg-[oklch(0.82_0.07_10)]", emoji: "🌸" },
+  Rot:     { dot: "bg-[oklch(0.55_0.20_25)]", emoji: "❤️" },
   Schwarz: { dot: "bg-[oklch(0.22_0.005_0)]", emoji: "🖤" },
-  Grün:    { dot: "bg-[oklch(0.55_0.06_140)]", emoji: "🌿", isNew: true },
-  Grau:    { dot: "bg-[oklch(0.65_0.005_240)]", emoji: "🩶" },
-  Braun:   { dot: "bg-[oklch(0.45_0.04_50)]", emoji: "🤎", isNew: true },
+  Blau:    { dot: "bg-[oklch(0.62_0.10_240)]", emoji: "💙", isNew: true },
+  Grau:    { dot: "bg-[oklch(0.55_0.01_240)]", emoji: "🩶" },
+  Cognac:  { dot: "bg-[oklch(0.55_0.12_45)]", emoji: "🤎", isNew: true },
 };
 
 interface Props {
