@@ -214,8 +214,8 @@ export function ProductConfigurator({ product }: Props) {
                   e.stopPropagation();
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
-                  setActiveImage((safeIdx - 1 + images.length) % images.length);
-                  setUserPickedImage(true);
+                  const prev = (safeIdx - 1 + images.length) % images.length;
+                  if (images[prev]) setActiveImageUrl(images[prev].url);
                 }}
                 aria-label="Vorheriges Bild"
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -228,8 +228,8 @@ export function ProductConfigurator({ product }: Props) {
                   e.stopPropagation();
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
-                  setActiveImage((safeIdx + 1) % images.length);
-                  setUserPickedImage(true);
+                  const next = (safeIdx + 1) % images.length;
+                  if (images[next]) setActiveImageUrl(images[next].url);
                 }}
                 aria-label="Nächstes Bild"
                 className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
