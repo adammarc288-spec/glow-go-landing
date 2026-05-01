@@ -13,7 +13,7 @@ import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { useCartSync } from "@/hooks/useCartSync";
 import { storefrontApiRequest, STOREFRONT_QUERY, type ShopifyProduct } from "@/lib/shopify";
 
-import giftSet from "@/assets/gift-set.jpg";
+import giftSet from "@/assets/gift-set.png";
 
 // Hero shows the actual Rosa/Pink TouchCarry product image from the connected Shopify store
 const heroImage =
