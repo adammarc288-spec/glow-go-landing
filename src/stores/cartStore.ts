@@ -145,6 +145,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       cartId: null,
       checkoutUrl: null,
+      discountCodes: [],
       isLoading: false,
       isSyncing: false,
 
