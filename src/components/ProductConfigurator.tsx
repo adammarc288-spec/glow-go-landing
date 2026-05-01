@@ -124,6 +124,7 @@ export function ProductConfigurator({ product }: Props) {
 
   const addItem = useCartStore((s) => s.addItem);
   const applyDiscountCodes = useCartStore((s) => s.applyDiscountCodes);
+  const clearCart = useCartStore((s) => s.clearCart);
   const isLoading = useCartStore((s) => s.isLoading);
 
   const allColors = useMemo(
@@ -133,6 +134,10 @@ export function ProductConfigurator({ product }: Props) {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
+
+    // Bestehenden Warenkorb leeren – jede "In den Warenkorb"-Aktion startet frisch,
+    // damit nie Artikel aus einer vorherigen Auswahl mitgenommen werden.
+    clearCart();
 
     // Pro Farbe eine eigene Cart-Line: Farben gruppieren -> passende Variante finden
     const colorCounts = allColors.reduce<Record<string, number>>((acc, c) => {
