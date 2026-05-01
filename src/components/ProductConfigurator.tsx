@@ -112,7 +112,18 @@ export function ProductConfigurator({ product }: Props) {
   const savings = compareAt - price;
   const savingsPct = compareAt > 0 ? Math.round((savings / compareAt) * 100) : 0;
 
+  // Bundle-Preise (Mengenrabatte)
+  const subtotal = price * quantity;
+  const bundleTotal = useMemo(() => {
+    if (quantity === 2) return 49.95;
+    if (quantity === 3) return 59.9;
+    return subtotal;
+  }, [quantity, subtotal]);
+  const bundleDiscount = subtotal - bundleTotal;
+  const bundleCode = quantity === 2 ? "BUNDLE2" : quantity === 3 ? "BUNDLE3" : null;
+
   const addItem = useCartStore((s) => s.addItem);
+  const applyDiscountCodes = useCartStore((s) => s.applyDiscountCodes);
   const isLoading = useCartStore((s) => s.isLoading);
 
   const allColors = useMemo(
@@ -141,6 +152,8 @@ export function ProductConfigurator({ product }: Props) {
       selectedOptions: selectedVariant.selectedOptions,
       attributes,
     });
+    // Bundle-Rabattcode auf den Cart anwenden
+    await applyDiscountCodes(bundleCode ? [bundleCode] : []);
   };
 
   const handleQuantityChange = (q: number) => {
