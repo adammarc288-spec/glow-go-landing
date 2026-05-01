@@ -63,6 +63,14 @@ const CART_LINES_REMOVE_MUTATION = `
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { id } userErrors { field message } }
   }
 `;
+const CART_DISCOUNT_CODES_UPDATE_MUTATION = `
+  mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+      cart { id discountCodes { code applicable } }
+      userErrors { field message }
+    }
+  }
+`;
 
 function formatCheckoutUrl(checkoutUrl: string): string {
   try {
