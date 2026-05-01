@@ -133,25 +133,29 @@ export function ProductConfigurator({ product }: Props) {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
-    const attributes =
-      quantity > 1
-        ? [
-            { key: "Farben (alle Taschen)", value: allColors.join(", ") },
-            ...extraColors.map((c, i) => ({
-              key: `Tasche ${i + 2} – Farbe`,
-              value: c,
-            })),
-          ]
-        : [];
-    await addItem({
-      product,
-      variantId: selectedVariant.id,
-      variantTitle: selectedVariant.title,
-      price: selectedVariant.price,
-      quantity,
-      selectedOptions: selectedVariant.selectedOptions,
-      attributes,
-    });
+
+    // Pro Farbe eine eigene Cart-Line: Farben gruppieren -> passende Variante finden
+    const colorCounts = allColors.reduce<Record<string, number>>((acc, c) => {
+      acc[c] = (acc[c] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    for (const [color, count] of Object.entries(colorCounts)) {
+      const variantForColor =
+        variants.find((v) =>
+          v.selectedOptions.some((o) => o.name === "Farbe" && o.value === color),
+        ) ?? selectedVariant;
+      await addItem({
+        product,
+        variantId: variantForColor.id,
+        variantTitle: variantForColor.title,
+        price: variantForColor.price,
+        quantity: count,
+        selectedOptions: variantForColor.selectedOptions,
+        attributes: [{ key: "Farbe", value: color }],
+      });
+    }
+
     // Bundle-Rabattcode auf den Cart anwenden
     await applyDiscountCodes(bundleCode ? [bundleCode] : []);
   };
