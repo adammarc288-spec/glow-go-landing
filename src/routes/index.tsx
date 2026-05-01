@@ -483,11 +483,11 @@ function GiftReminder({ onShopClick }: { onShopClick: () => void }) {
               Solange Vorrat reicht
             </span>
             <h2 className="mt-2 font-serif text-4xl md:text-5xl tracking-tight">
-              🎁 Vergiss nicht dein Gratis-Geschenk!
+              🎁 Vergiss nicht dein Angebot!
             </h2>
             <p className="mt-4 text-foreground/75">
-              Kaufe heute 2 Taschen und erhalte GRATIS einen eleganten Schminkbeutel im Wert von
-              €19,95.
+              Kaufe heute 2 Glow & Go™ Taschen und erhalte die <strong>3. Tasche GRATIS</strong> dazu –
+              perfekt für dich & deine Liebsten.
             </p>
             <div className="mt-6 inline-flex items-center gap-3 bg-background/60 rounded-2xl px-4 py-3 border border-border">
               <span className="text-sm text-cta font-medium">⏰ Endet in:</span>
