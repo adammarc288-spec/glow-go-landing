@@ -253,8 +253,7 @@ export function ProductConfigurator({ product }: Props) {
                 key={img.url}
                 type="button"
                 onClick={() => {
-                  setActiveImage(i);
-                  setUserPickedImage(true);
+                  setActiveImageUrl(img.url);
                 }}
                 className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
