@@ -54,6 +54,7 @@ export function ProductConfigurator({ product }: Props) {
     return opt?.values?.[0] ?? "";
   });
   const [quantity, setQuantity] = useState(1);
+  const [isManualImageSelection, setIsManualImageSelection] = useState(false);
   const [activeImageUrl, setActiveImageUrl] = useState<string>(() => {
     const opt = node.options.find((o) => o.name === "Farbe") ?? node.options[0];
     const firstColor = opt?.values?.[0] ?? "";
@@ -61,7 +62,7 @@ export function ProductConfigurator({ product }: Props) {
       variants.find((v) =>
         v.selectedOptions.some((o) => o.name === "Farbe" && o.value === firstColor),
       )?.image?.url ?? "";
-    return firstVariantImage || COLOR_IMAGE_MAP[firstColor] || images[0]?.url || "";
+    return COLOR_IMAGE_MAP[firstColor] || firstVariantImage || images[0]?.url || "";
   });
   const [extraColors, setExtraColors] = useState<string[]>([]);
   const [colorModalOpen, setColorModalOpen] = useState(false);
@@ -92,23 +93,24 @@ export function ProductConfigurator({ product }: Props) {
     [variants, selectedColor],
   );
 
-  // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild)
+  // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild),
+  // aber manuelle Thumbnail-Auswahl nicht überschreiben.
   useEffect(() => {
-    if (!selectedColor) return;
-    if (selectedVariant?.image?.url) {
-      setActiveImageUrl(selectedVariant.image.url);
-      return;
-    }
+    if (!selectedColor || isManualImageSelection) return;
     const mapUrl = COLOR_IMAGE_MAP[selectedColor];
     if (mapUrl) {
       setActiveImageUrl(mapUrl);
+      return;
+    }
+    if (selectedVariant?.image?.url) {
+      setActiveImageUrl(selectedVariant.image.url);
       return;
     }
     if (images[0]?.url) {
       setActiveImageUrl(images[0].url);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedColor, selectedVariant?.image?.url]);
+  }, [selectedColor, selectedVariant?.image?.url, isManualImageSelection]);
 
   const activeImage = useMemo(() => {
     const idx = images.findIndex((img) => img.url === activeImageUrl);
