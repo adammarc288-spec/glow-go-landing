@@ -504,7 +504,7 @@ function GiftReminder({ onShopClick }: { onShopClick: () => void }) {
             <div className="absolute -inset-3 bg-gradient-gold opacity-30 blur-2xl rounded-full" />
             <img
               src={giftSet}
-              alt="Glow & Go Geschenkset mit Schminkbeutel"
+              alt="Glow & Go Taschen – Buy 2 Get 1 Free"
               className="relative rounded-3xl shadow-elegant w-full"
               loading="lazy"
             />
@@ -526,8 +526,8 @@ function FAQ() {
       a: "3–7 Werktage nach DE/AT/CH. Express-Versand in 1–3 Tagen möglich.",
     },
     {
-      q: "Was ist das Gratis-Geschenk?",
-      a: "Bei Kauf von 2 Taschen erhältst du einen eleganten Schminkbeutel (Wert €19,95) kostenlos dazu!",
+      q: "Was ist das Gratis-Angebot?",
+      a: "Bei Kauf von 2 Glow & Go™ Taschen erhältst du die 3. Tasche komplett GRATIS dazu (Buy 2 Get 1 Free).",
     },
     {
       q: "Kann ich Farben kombinieren?",
