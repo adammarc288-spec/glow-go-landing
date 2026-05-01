@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loader2, ShieldCheck, Smartphone, Briefcase, Link2, Gift, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
@@ -6,12 +6,14 @@ import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
 
 const colorSwatches: Record<string, { dot: string; emoji: string; isNew?: boolean }> = {
-  Rosa:    { dot: "bg-[oklch(0.82_0.07_10)]", emoji: "🌸" },
-  Rot:     { dot: "bg-[oklch(0.55_0.20_25)]", emoji: "❤️" },
-  Schwarz: { dot: "bg-[oklch(0.22_0.005_0)]", emoji: "🖤" },
-  Blau:    { dot: "bg-[oklch(0.62_0.10_240)]", emoji: "💙", isNew: true },
-  Grau:    { dot: "bg-[oklch(0.55_0.01_240)]", emoji: "🩶" },
-  Cognac:  { dot: "bg-[oklch(0.55_0.12_45)]", emoji: "🤎", isNew: true },
+  Rosa:        { dot: "bg-[oklch(0.82_0.07_10)]",   emoji: "🌸" },
+  Rot:         { dot: "bg-[oklch(0.55_0.20_25)]",   emoji: "❤️" },
+  Schwarz:     { dot: "bg-[oklch(0.22_0.005_0)]",   emoji: "🖤" },
+  Königsblau:  { dot: "bg-[oklch(0.42_0.18_265)]",  emoji: "💙", isNew: true },
+  Grau:        { dot: "bg-[oklch(0.55_0.01_240)]",  emoji: "🩶" },
+  Cognac:      { dot: "bg-[oklch(0.55_0.12_45)]",   emoji: "🤎" },
+  Gelb:        { dot: "bg-[oklch(0.85_0.16_95)]",   emoji: "💛", isNew: true },
+  Grün:        { dot: "bg-[oklch(0.55_0.13_145)]",  emoji: "💚", isNew: true },
 };
 
 interface Props {
@@ -36,6 +38,13 @@ export function ProductConfigurator({ product }: Props) {
       variants[0],
     [variants, selectedColor],
   );
+
+  // Auto-switch the gallery to the variant image when color changes
+  useEffect(() => {
+    if (!selectedVariant?.image?.url) return;
+    const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
+    if (idx >= 0) setActiveImage(idx);
+  }, [selectedVariant, images]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
