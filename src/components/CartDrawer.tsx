@@ -117,10 +117,28 @@ export const CartDrawer = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex-shrink-0 space-y-4 pt-4 border-t bg-background">
+              <div className="flex-shrink-0 space-y-3 pt-4 border-t bg-background">
+                {bundleDiscount > 0 && (
+                  <>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Zwischensumme</span>
+                      <span className="text-muted-foreground line-through">
+                        {subtotal.toFixed(2)} {currency}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gold font-medium">
+                        🎁 Bundle-Rabatt ({discountCodes.join(", ")})
+                      </span>
+                      <span className="text-gold font-semibold">
+                        −{bundleDiscount.toFixed(2)} {currency}
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-medium">Zwischensumme</span>
-                  <span className="text-xl font-serif font-semibold">
+                  <span className="text-lg font-medium">Gesamt</span>
+                  <span className="text-xl font-serif font-semibold text-cta">
                     {totalPrice.toFixed(2)} {currency}
                   </span>
                 </div>
