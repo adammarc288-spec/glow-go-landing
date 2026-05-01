@@ -54,6 +54,25 @@ export function ProductConfigurator({ product }: Props) {
   });
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [extraColors, setExtraColors] = useState<string[]>([]);
+  const [colorModalOpen, setColorModalOpen] = useState(false);
+
+  const colorOptionValues = useMemo(
+    () => node.options.find((o) => o.name === "Farbe")?.values ?? [],
+    [node.options],
+  );
+
+  // Sync extraColors length with quantity (default to main color)
+  useEffect(() => {
+    const needed = Math.max(0, quantity - 1);
+    setExtraColors((prev) => {
+      if (prev.length === needed) return prev;
+      const next = [...prev];
+      while (next.length < needed) next.push(selectedColor);
+      next.length = needed;
+      return next;
+    });
+  }, [quantity, selectedColor]);
 
   const selectedVariant = useMemo(
     () =>
