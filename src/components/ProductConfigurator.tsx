@@ -299,6 +299,34 @@ export function ProductConfigurator({ product }: Props) {
             </p>
           )}
 
+          {/* Bundle-Preis Anzeige */}
+          {quantity > 1 && bundleDiscount > 0 && (
+            <div className="mt-3 rounded-2xl border-2 border-gold/40 bg-gradient-to-br from-gold/10 to-cta/5 p-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs font-semibold text-gold-foreground/80 uppercase tracking-wide">
+                    {quantity === 3 ? "🎁 Buy 2 Get 1 Free" : "🎉 Bundle-Rabatt"}
+                  </p>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="font-serif text-3xl text-cta tracking-tight">
+                      €{bundleTotal.toFixed(2).replace(".", ",")}
+                    </span>
+                    <span className="text-base text-muted-foreground line-through">
+                      €{subtotal.toFixed(2).replace(".", ",")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-foreground/70 mt-0.5">
+                    Du sparst zusätzlich <strong>€{bundleDiscount.toFixed(2).replace(".", ",")}</strong>{" "}
+                    im Bundle
+                  </p>
+                </div>
+                <span className="bg-gold/20 text-gold-foreground border border-gold/40 rounded-full px-3 py-1 text-sm font-bold">
+                  −{Math.round((bundleDiscount / subtotal) * 100)}%
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Zusammenfassung der gewählten Farben */}
           {quantity > 1 && extraColors.length > 0 && (
             <div className="mt-3 rounded-2xl border border-border bg-muted/40 p-3 text-sm">
