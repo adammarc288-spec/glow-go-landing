@@ -57,7 +57,11 @@ export function ProductConfigurator({ product }: Props) {
   const [activeImageUrl, setActiveImageUrl] = useState<string>(() => {
     const opt = node.options.find((o) => o.name === "Farbe") ?? node.options[0];
     const firstColor = opt?.values?.[0] ?? "";
-    return COLOR_IMAGE_MAP[firstColor] ?? images[0]?.url ?? "";
+    const firstVariantImage =
+      variants.find((v) =>
+        v.selectedOptions.some((o) => o.name === "Farbe" && o.value === firstColor),
+      )?.image?.url ?? "";
+    return firstVariantImage || COLOR_IMAGE_MAP[firstColor] || images[0]?.url || "";
   });
   const [extraColors, setExtraColors] = useState<string[]>([]);
   const [colorModalOpen, setColorModalOpen] = useState(false);
@@ -91,13 +95,17 @@ export function ProductConfigurator({ product }: Props) {
   // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild)
   useEffect(() => {
     if (!selectedColor) return;
+    if (selectedVariant?.image?.url) {
+      setActiveImageUrl(selectedVariant.image.url);
+      return;
+    }
     const mapUrl = COLOR_IMAGE_MAP[selectedColor];
     if (mapUrl) {
       setActiveImageUrl(mapUrl);
       return;
     }
-    if (selectedVariant?.image?.url) {
-      setActiveImageUrl(selectedVariant.image.url);
+    if (images[0]?.url) {
+      setActiveImageUrl(images[0].url);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedColor, selectedVariant?.image?.url]);
@@ -192,7 +200,7 @@ export function ProductConfigurator({ product }: Props) {
                 if (images[next]) setActiveImageUrl(images[next].url);
               }
             }}
-            className="block w-full aspect-square max-h-[350px] md:max-h-none mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in"
+            className="flex w-full max-w-[350px] aspect-square max-h-[350px] items-center justify-center mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
             aria-label="Bild vergrößern"
           >
             {activeImageUrl && (
@@ -200,7 +208,7 @@ export function ProductConfigurator({ product }: Props) {
                 key={activeImageUrl}
                 src={activeImageUrl}
                 alt={`Glow & Go™ – ${selectedColor}`}
-                className="w-full h-full object-contain animate-fade-in transition-transform duration-300 hover:scale-105"
+                className="w-full h-full max-w-full max-h-full object-contain animate-fade-in"
                 loading="lazy"
               />
             )}
@@ -247,7 +255,7 @@ export function ProductConfigurator({ product }: Props) {
         </div>
 
         {images.length > 1 && (
-          <div className="mt-4 flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x [scrollbar-width:thin]">
+          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 -mx-4 px-4 md:mx-0 md:px-0 snap-x [scrollbar-width:thin]">
             {images.map((img, i) => (
               <button
                 key={img.url}
