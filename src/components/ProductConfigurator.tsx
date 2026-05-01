@@ -54,8 +54,10 @@ export function ProductConfigurator({ product }: Props) {
   });
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [userPickedImage, setUserPickedImage] = useState(false);
   const [extraColors, setExtraColors] = useState<string[]>([]);
   const [colorModalOpen, setColorModalOpen] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(false);
 
   const colorOptionValues = useMemo(
     () => node.options.find((o) => o.name === "Farbe")?.values ?? [],
