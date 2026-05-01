@@ -54,8 +54,11 @@ export function ProductConfigurator({ product }: Props) {
     return opt?.values?.[0] ?? "";
   });
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState(0);
-  const [userPickedImage, setUserPickedImage] = useState(false);
+  const [activeImageUrl, setActiveImageUrl] = useState<string>(() => {
+    const opt = node.options.find((o) => o.name === "Farbe") ?? node.options[0];
+    const firstColor = opt?.values?.[0] ?? "";
+    return COLOR_IMAGE_MAP[firstColor] ?? images[0]?.url ?? "";
+  });
   const [extraColors, setExtraColors] = useState<string[]>([]);
   const [colorModalOpen, setColorModalOpen] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
@@ -88,30 +91,21 @@ export function ProductConfigurator({ product }: Props) {
   // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild)
   useEffect(() => {
     if (!selectedColor) return;
-    setUserPickedImage(false);
     const mapUrl = COLOR_IMAGE_MAP[selectedColor];
     if (mapUrl) {
-      const idx = images.findIndex((img) => img.url === mapUrl);
-      if (idx >= 0) {
-        setActiveImage(idx);
-        return;
-      }
+      setActiveImageUrl(mapUrl);
+      return;
     }
     if (selectedVariant?.image?.url) {
-      const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
-      if (idx >= 0) setActiveImage(idx);
+      setActiveImageUrl(selectedVariant.image.url);
     }
-  }, [selectedColor, selectedVariant, images]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedColor, selectedVariant?.image?.url]);
 
-  // Aktuelle Bild-URL: User-Auswahl > Map > Varianten-Bild > Galerie
-  const activeImageUrl = useMemo(() => {
-    if (userPickedImage) return images[activeImage]?.url ?? images[0]?.url ?? "";
-    const mapUrl = COLOR_IMAGE_MAP[selectedColor];
-    if (mapUrl && images.some((img) => img.url === mapUrl)) return mapUrl;
-    if (mapUrl) return mapUrl;
-    if (selectedVariant?.image?.url) return selectedVariant.image.url;
-    return images[activeImage]?.url ?? images[0]?.url ?? "";
-  }, [userPickedImage, selectedVariant, selectedColor, activeImage, images]);
+  const activeImage = useMemo(() => {
+    const idx = images.findIndex((img) => img.url === activeImageUrl);
+    return idx >= 0 ? idx : 0;
+  }, [activeImageUrl, images]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
@@ -195,8 +189,7 @@ export function ProductConfigurator({ product }: Props) {
                 const next = dx < 0
                   ? (safeIdx + 1) % images.length
                   : (safeIdx - 1 + images.length) % images.length;
-                setActiveImage(next);
-                setUserPickedImage(true);
+                if (images[next]) setActiveImageUrl(images[next].url);
               }
             }}
             className="block w-full max-h-[60vh] md:max-h-none md:aspect-square bg-card rounded-3xl overflow-hidden shadow-soft cursor-zoom-in"
@@ -221,8 +214,8 @@ export function ProductConfigurator({ product }: Props) {
                   e.stopPropagation();
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
-                  setActiveImage((safeIdx - 1 + images.length) % images.length);
-                  setUserPickedImage(true);
+                  const prev = (safeIdx - 1 + images.length) % images.length;
+                  if (images[prev]) setActiveImageUrl(images[prev].url);
                 }}
                 aria-label="Vorheriges Bild"
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -235,8 +228,8 @@ export function ProductConfigurator({ product }: Props) {
                   e.stopPropagation();
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
-                  setActiveImage((safeIdx + 1) % images.length);
-                  setUserPickedImage(true);
+                  const next = (safeIdx + 1) % images.length;
+                  if (images[next]) setActiveImageUrl(images[next].url);
                 }}
                 aria-label="Nächstes Bild"
                 className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -260,8 +253,7 @@ export function ProductConfigurator({ product }: Props) {
                 key={img.url}
                 type="button"
                 onClick={() => {
-                  setActiveImage(i);
-                  setUserPickedImage(true);
+                  setActiveImageUrl(img.url);
                 }}
                 className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
