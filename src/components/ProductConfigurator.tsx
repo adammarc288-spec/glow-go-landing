@@ -91,30 +91,21 @@ export function ProductConfigurator({ product }: Props) {
   // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild)
   useEffect(() => {
     if (!selectedColor) return;
-    setUserPickedImage(false);
     const mapUrl = COLOR_IMAGE_MAP[selectedColor];
     if (mapUrl) {
-      const idx = images.findIndex((img) => img.url === mapUrl);
-      if (idx >= 0) {
-        setActiveImage(idx);
-        return;
-      }
+      setActiveImageUrl(mapUrl);
+      return;
     }
     if (selectedVariant?.image?.url) {
-      const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
-      if (idx >= 0) setActiveImage(idx);
+      setActiveImageUrl(selectedVariant.image.url);
     }
-  }, [selectedColor, selectedVariant, images]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedColor, selectedVariant?.image?.url]);
 
-  // Aktuelle Bild-URL: User-Auswahl > Map > Varianten-Bild > Galerie
-  const activeImageUrl = useMemo(() => {
-    if (userPickedImage) return images[activeImage]?.url ?? images[0]?.url ?? "";
-    const mapUrl = COLOR_IMAGE_MAP[selectedColor];
-    if (mapUrl && images.some((img) => img.url === mapUrl)) return mapUrl;
-    if (mapUrl) return mapUrl;
-    if (selectedVariant?.image?.url) return selectedVariant.image.url;
-    return images[activeImage]?.url ?? images[0]?.url ?? "";
-  }, [userPickedImage, selectedVariant, selectedColor, activeImage, images]);
+  const activeImage = useMemo(() => {
+    const idx = images.findIndex((img) => img.url === activeImageUrl);
+    return idx >= 0 ? idx : 0;
+  }, [activeImageUrl, images]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
