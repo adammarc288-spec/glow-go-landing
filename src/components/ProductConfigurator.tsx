@@ -39,6 +39,13 @@ export function ProductConfigurator({ product }: Props) {
     [variants, selectedColor],
   );
 
+  // Auto-switch the gallery to the variant image when color changes
+  useEffect(() => {
+    if (!selectedVariant?.image?.url) return;
+    const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
+    if (idx >= 0) setActiveImage(idx);
+  }, [selectedVariant, images]);
+
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
   const currency = selectedVariant?.price.currencyCode ?? "EUR";
