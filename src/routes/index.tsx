@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-import { Loader2, ShieldCheck, Truck, RotateCcw, Gift, Lock, Star, Smartphone, Sparkles, Briefcase, Link2 } from "lucide-react";
+import { ShieldCheck, Truck, RotateCcw, Gift, Lock, Star, Smartphone, Sparkles, Briefcase, Link2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 
@@ -11,8 +11,7 @@ import { ProductConfigurator } from "@/components/ProductConfigurator";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { useCartSync } from "@/hooks/useCartSync";
-import { useProduct } from "@/hooks/useProduct";
-import { useCartStore } from "@/stores/cartStore";
+import { storefrontApiRequest, STOREFRONT_QUERY, type ShopifyProduct } from "@/lib/shopify";
 
 import giftSet from "@/assets/gift-set.jpg";
 
@@ -20,8 +19,28 @@ import giftSet from "@/assets/gift-set.jpg";
 const heroImage =
   "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605";
 
+async function fetchLandingProduct(): Promise<ShopifyProduct | null> {
+  try {
+    const data = await storefrontApiRequest(STOREFRONT_QUERY, { first: 1, query: null });
+    return data?.data?.products?.edges?.[0] ?? null;
+  } catch (e) {
+    console.error("Failed to load product", e);
+    return null;
+  }
+}
+
 export const Route = createFileRoute("/")({
   component: Landing,
+  loader: () => fetchLandingProduct(),
+  staleTime: 60_000,
+  errorComponent: ({ error }) => (
+    <div className="min-h-screen flex items-center justify-center p-8 text-center">
+      <p className="text-muted-foreground">{error.message}</p>
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="min-h-screen flex items-center justify-center">Seite nicht gefunden</div>
+  ),
   head: () => ({
     meta: [
       { title: "Glow & Go™ – Touchscreen Umhängetasche für Frauen | Smart. Stylisch." },
@@ -631,7 +650,7 @@ function Footer() {
 
 function Landing() {
   useCartSync();
-  const { product, loading } = useProduct();
+  const product = Route.useLoaderData();
 
   const scrollToProduct = () => {
     document.getElementById("kollektion")?.scrollIntoView({ behavior: "smooth" });
@@ -651,15 +670,11 @@ function Landing() {
       <GiftBanner onShopClick={scrollToProduct} />
 
       <Section id="kollektion">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-cta" />
-          </div>
-        ) : product ? (
+        {product ? (
           <ProductConfigurator product={product} />
         ) : (
           <div className="text-center py-20">
-            <p className="text-muted-foreground">No products found</p>
+            <p className="text-muted-foreground">Produkt konnte nicht geladen werden.</p>
           </div>
         )}
       </Section>
