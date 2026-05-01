@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ShieldCheck, Smartphone, Briefcase, Link2, Gift, Check } from "lucide-react";
+import { Loader2, ShieldCheck, Smartphone, Briefcase, Link2, Gift, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
