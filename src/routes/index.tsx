@@ -563,7 +563,7 @@ function FinalCTA({ onShopClick }: { onShopClick: () => void }) {
         </div>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs text-foreground/65">
           <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> SSL-Verschlüsselt</span>
-          <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Kostenlos ab 35€</span>
+          
           <span className="flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> 30 Tage Rückgabe</span>
           <span className="flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" /> 3. Tasche gratis im 3er-Set</span>
           
