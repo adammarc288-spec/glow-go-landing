@@ -124,6 +124,7 @@ export function ProductConfigurator({ product }: Props) {
 
   const addItem = useCartStore((s) => s.addItem);
   const applyDiscountCodes = useCartStore((s) => s.applyDiscountCodes);
+  const clearCart = useCartStore((s) => s.clearCart);
   const isLoading = useCartStore((s) => s.isLoading);
 
   const allColors = useMemo(
