@@ -200,7 +200,7 @@ export function ProductConfigurator({ product }: Props) {
                 key={activeImageUrl}
                 src={activeImageUrl}
                 alt={`Glow & Go™ – ${selectedColor}`}
-                className="w-full h-full object-contain md:object-cover animate-fade-in transition-transform duration-300 hover:scale-105"
+                className="w-full h-full object-contain animate-fade-in transition-transform duration-300 hover:scale-105"
                 loading="lazy"
               />
             )}
