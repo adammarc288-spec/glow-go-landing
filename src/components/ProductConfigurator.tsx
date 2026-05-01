@@ -200,17 +200,20 @@ export function ProductConfigurator({ product }: Props) {
                 if (images[next]) setActiveImageUrl(images[next].url);
               }
             }}
-            className="grid w-full max-w-[350px] aspect-square max-h-[350px] place-items-center mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
+            className="relative block w-full max-w-[350px] aspect-square max-h-[350px] mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
             aria-label="Bild vergrößern"
           >
             {activeImageUrl && (
-              <img
-                key={activeImageUrl}
-                src={activeImageUrl}
-                alt={`Glow & Go™ – ${selectedColor}`}
-                className="block w-auto h-auto max-w-full max-h-full object-contain object-center animate-fade-in"
-                loading="lazy"
-              />
+              <span className="absolute inset-0 flex items-center justify-center p-2">
+                <img
+                  key={activeImageUrl}
+                  src={activeImageUrl}
+                  alt={`Glow & Go™ – ${selectedColor}`}
+                  className="block w-full h-full object-contain object-center animate-fade-in"
+                  style={{ objectPosition: "center center" }}
+                  loading="lazy"
+                />
+              </span>
             )}
           </button>
 
