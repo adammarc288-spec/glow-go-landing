@@ -199,7 +199,10 @@ export function ProductConfigurator({ product }: Props) {
                 const next = dx < 0
                   ? (safeIdx + 1) % images.length
                   : (safeIdx - 1 + images.length) % images.length;
-                if (images[next]) setActiveImageUrl(images[next].url);
+                if (images[next]) {
+                  setIsManualImageSelection(true);
+                  setActiveImageUrl(images[next].url);
+                }
               }
             }}
             className="relative block w-full max-w-[350px] aspect-square max-h-[350px] mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
@@ -228,7 +231,10 @@ export function ProductConfigurator({ product }: Props) {
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
                   const prev = (safeIdx - 1 + images.length) % images.length;
-                  if (images[prev]) setActiveImageUrl(images[prev].url);
+                   if (images[prev]) {
+                     setIsManualImageSelection(true);
+                     setActiveImageUrl(images[prev].url);
+                   }
                 }}
                 aria-label="Vorheriges Bild"
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -242,7 +248,10 @@ export function ProductConfigurator({ product }: Props) {
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
                   const next = (safeIdx + 1) % images.length;
-                  if (images[next]) setActiveImageUrl(images[next].url);
+                   if (images[next]) {
+                     setIsManualImageSelection(true);
+                     setActiveImageUrl(images[next].url);
+                   }
                 }}
                 aria-label="Nächstes Bild"
                 className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -265,9 +274,10 @@ export function ProductConfigurator({ product }: Props) {
               <button
                 key={img.url}
                 type="button"
-                onClick={() => {
-                  setActiveImageUrl(img.url);
-                }}
+                 onClick={() => {
+                   setIsManualImageSelection(true);
+                   setActiveImageUrl(img.url);
+                 }}
                 className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
