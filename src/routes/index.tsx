@@ -87,7 +87,7 @@ function TrustBadges() {
     { i: <Lock className="h-4 w-4" />, t: "Sicher" },
     { i: <Truck className="h-4 w-4" />, t: "3–7 Tage" },
     { i: <RotateCcw className="h-4 w-4" />, t: "30 Tage" },
-    { i: <Gift className="h-4 w-4" />, t: "Gratis-Geschenk" },
+    { i: <Gift className="h-4 w-4" />, t: "Buy 2 Get 1 Free" },
   ];
   return (
     <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
@@ -162,8 +162,8 @@ function Hero({ onShopClick }: { onShopClick: () => void }) {
             <div className="absolute -bottom-4 -left-4 bg-card border border-border/60 rounded-2xl px-4 py-3 shadow-elegant flex items-center gap-3 max-w-[16rem]">
               <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center text-lg">🎁</div>
               <div>
-                <p className="text-xs font-semibold">Gratis-Geschenk</p>
-                <p className="text-xs text-muted-foreground">bei 2er-Set</p>
+                <p className="text-xs font-semibold">3. Tasche GRATIS</p>
+                <p className="text-xs text-muted-foreground">beim 3er-Set</p>
               </div>
             </div>
           </div>
@@ -229,33 +229,31 @@ function GiftBanner({ onShopClick }: { onShopClick: () => void }) {
       title: "2 Taschen kaufen",
       price: "€49,95",
       compareAt: "€59,90",
-      badge: "⭐ BELIEBT",
+      badge: null,
       perks: [
         "✅ Gratis Versand",
         "✅ 2 verschiedene Farben",
-        "✅ GRATIS: Eleganter Schminkbeutel",
-        "✅ Geschenkbox inklusive",
+        "✅ Spare €9,95",
       ],
-      cta: "Bestes Angebot wählen",
+      cta: "2er-Set wählen",
       qty: 2,
-      highlight: true,
-      footnote: '🔥 "Für mich & meine beste Freundin"',
+      highlight: false,
     },
     {
       title: "3 Taschen kaufen",
-      price: "€64,95",
+      price: "€59,90",
       compareAt: "€89,85",
-      badge: null,
+      badge: "⭐ BESTES ANGEBOT",
       perks: [
         "✅ Gratis Express-Versand",
         "✅ 3 verschiedene Farben",
-        "✅ GRATIS: Schminkbeutel + Schal",
-        "✅ Premium Geschenkbox",
-        "✅ Persönliche Grußkarte",
+        "🎁 Die 3. Tasche GRATIS",
+        "✅ Du sparst €29,95",
       ],
-      cta: "Perfektes Geschenkset",
+      cta: "Buy 2 Get 1 Free →",
       qty: 3,
-      highlight: false,
+      highlight: true,
+      footnote: '🔥 "Eine für dich, eine für die beste Freundin – die 3. gratis!"',
     },
   ];
 
@@ -506,7 +504,7 @@ function GiftReminder({ onShopClick }: { onShopClick: () => void }) {
             <div className="absolute -inset-3 bg-gradient-gold opacity-30 blur-2xl rounded-full" />
             <img
               src={giftSet}
-              alt="Glow & Go Geschenkset mit Schminkbeutel"
+              alt="Glow & Go Taschen – Buy 2 Get 1 Free"
               className="relative rounded-3xl shadow-elegant w-full"
               loading="lazy"
             />
@@ -528,8 +526,8 @@ function FAQ() {
       a: "3–7 Werktage nach DE/AT/CH. Express-Versand in 1–3 Tagen möglich.",
     },
     {
-      q: "Was ist das Gratis-Geschenk?",
-      a: "Bei Kauf von 2 Taschen erhältst du einen eleganten Schminkbeutel (Wert €19,95) kostenlos dazu!",
+      q: "Was ist das Gratis-Angebot?",
+      a: "Bei Kauf von 2 Glow & Go™ Taschen erhältst du die 3. Tasche komplett GRATIS dazu (Buy 2 Get 1 Free).",
     },
     {
       q: "Kann ich Farben kombinieren?",
@@ -594,7 +592,7 @@ function FinalCTA({ onShopClick }: { onShopClick: () => void }) {
           <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> SSL-Verschlüsselt</span>
           <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Kostenlos ab 35€</span>
           <span className="flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> 30 Tage Rückgabe</span>
-          <span className="flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" /> Gratis-Geschenk bei 2er-Set</span>
+          <span className="flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" /> 3. Tasche gratis im 3er-Set</span>
           <span className="flex items-center gap-1.5 text-gold">⭐ 4.9 / 5 Sterne</span>
         </div>
       </div>

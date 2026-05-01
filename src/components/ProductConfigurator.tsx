@@ -199,12 +199,12 @@ export function ProductConfigurator({ product }: Props) {
           </div>
           {quantity === 2 && (
             <p className="mt-2 text-xs text-gold flex items-center gap-1.5 font-medium">
-              <Gift className="h-3.5 w-3.5" /> Du erhältst einen GRATIS Schminkbeutel im Wert von €19,95
+              <Gift className="h-3.5 w-3.5" /> Tipp: Nimm 3 – die 3. Tasche ist GRATIS!
             </p>
           )}
           {quantity === 3 && (
             <p className="mt-2 text-xs text-gold flex items-center gap-1.5 font-medium">
-              <Gift className="h-3.5 w-3.5" /> Schminkbeutel + Schal + Premium Geschenkbox GRATIS
+              <Gift className="h-3.5 w-3.5" /> 🎁 Buy 2 Get 1 Free – die 3. Tasche GRATIS
             </p>
           )}
         </div>

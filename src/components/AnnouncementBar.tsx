@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const messages = [
-  "🎁 Kaufe 2, erhalte einen GRATIS Schminkbeutel",
+  "🎁 Kaufe 2 Taschen – die 3. ist GRATIS",
   "🚚 Kostenloser Versand ab 35€ nach DE / AT / CH",
   "⏰ Nur noch heute: 40% Rabatt auf alle Farben",
 ];
