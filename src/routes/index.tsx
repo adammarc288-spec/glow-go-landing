@@ -14,8 +14,11 @@ import { useCartSync } from "@/hooks/useCartSync";
 import { useProduct } from "@/hooks/useProduct";
 import { useCartStore } from "@/stores/cartStore";
 
-import heroImage from "@/assets/hero-lifestyle.jpg";
 import giftSet from "@/assets/gift-set.jpg";
+
+// Hero shows the actual Rosa/Pink TouchCarry product image from the connected Shopify store
+const heroImage =
+  "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605";
 
 export const Route = createFileRoute("/")({
   component: Landing,
