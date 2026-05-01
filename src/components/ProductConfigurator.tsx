@@ -87,6 +87,7 @@ export function ProductConfigurator({ product }: Props) {
   // Bei Farbwechsel: passendes Bild aktivieren (Varianten-Bild → Map → 0)
   useEffect(() => {
     if (!selectedColor) return;
+    setUserPickedImage(false);
     if (selectedVariant?.image?.url) {
       const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
       if (idx >= 0) {
@@ -101,12 +102,13 @@ export function ProductConfigurator({ product }: Props) {
     }
   }, [selectedColor, selectedVariant, images]);
 
-  // Aktuelle Bild-URL: Varianten-Bild > Map > Galerie
+  // Aktuelle Bild-URL: User-Auswahl > Varianten-Bild > Map > Galerie
   const activeImageUrl = useMemo(() => {
+    if (userPickedImage) return images[activeImage]?.url ?? images[0]?.url ?? "";
     if (selectedVariant?.image?.url) return selectedVariant.image.url;
     if (COLOR_IMAGE_MAP[selectedColor]) return COLOR_IMAGE_MAP[selectedColor];
     return images[activeImage]?.url ?? images[0]?.url ?? "";
-  }, [selectedVariant, selectedColor, activeImage, images]);
+  }, [userPickedImage, selectedVariant, selectedColor, activeImage, images]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
