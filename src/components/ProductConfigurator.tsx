@@ -12,6 +12,7 @@ import {
 import { useCartStore } from "@/stores/cartStore";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
+import { ZoomableImage } from "./ZoomableImage";
 
 // ─── ANLEITUNG: Ersetze die URLs hier mit deinen echten Shopify-Bildern pro Farbe ───
 // Gehe in Shopify Admin → Produkte → Varianten → lade pro Farbe ein Bild hoch
