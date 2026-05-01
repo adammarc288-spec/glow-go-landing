@@ -189,8 +189,7 @@ export function ProductConfigurator({ product }: Props) {
                 const next = dx < 0
                   ? (safeIdx + 1) % images.length
                   : (safeIdx - 1 + images.length) % images.length;
-                setActiveImage(next);
-                setUserPickedImage(true);
+                if (images[next]) setActiveImageUrl(images[next].url);
               }
             }}
             className="block w-full max-h-[60vh] md:max-h-none md:aspect-square bg-card rounded-3xl overflow-hidden shadow-soft cursor-zoom-in"
