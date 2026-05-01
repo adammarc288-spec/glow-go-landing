@@ -135,10 +135,6 @@ export function ProductConfigurator({ product }: Props) {
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
 
-    // Bestehenden Warenkorb leeren – jede "In den Warenkorb"-Aktion startet frisch,
-    // damit nie Artikel aus einer vorherigen Auswahl mitgenommen werden.
-    clearCart();
-
     // Pro Farbe eine eigene Cart-Line: Farben gruppieren -> passende Variante finden
     const colorCounts = allColors.reduce<Record<string, number>>((acc, c) => {
       acc[c] = (acc[c] ?? 0) + 1;
