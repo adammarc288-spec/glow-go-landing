@@ -112,7 +112,18 @@ export function ProductConfigurator({ product }: Props) {
   const savings = compareAt - price;
   const savingsPct = compareAt > 0 ? Math.round((savings / compareAt) * 100) : 0;
 
+  // Bundle-Preise (Mengenrabatte)
+  const subtotal = price * quantity;
+  const bundleTotal = useMemo(() => {
+    if (quantity === 2) return 49.95;
+    if (quantity === 3) return 59.9;
+    return subtotal;
+  }, [quantity, subtotal]);
+  const bundleDiscount = subtotal - bundleTotal;
+  const bundleCode = quantity === 2 ? "BUNDLE2" : quantity === 3 ? "BUNDLE3" : null;
+
   const addItem = useCartStore((s) => s.addItem);
+  const applyDiscountCodes = useCartStore((s) => s.applyDiscountCodes);
   const isLoading = useCartStore((s) => s.isLoading);
 
   const allColors = useMemo(
@@ -141,6 +152,8 @@ export function ProductConfigurator({ product }: Props) {
       selectedOptions: selectedVariant.selectedOptions,
       attributes,
     });
+    // Bundle-Rabattcode auf den Cart anwenden
+    await applyDiscountCodes(bundleCode ? [bundleCode] : []);
   };
 
   const handleQuantityChange = (q: number) => {
@@ -284,6 +297,34 @@ export function ProductConfigurator({ product }: Props) {
             <p className="mt-2 text-xs text-gold flex items-center gap-1.5 font-medium">
               <Gift className="h-3.5 w-3.5" /> 🎁 Buy 2 Get 1 Free – die 3. Tasche GRATIS
             </p>
+          )}
+
+          {/* Bundle-Preis Anzeige */}
+          {quantity > 1 && bundleDiscount > 0 && (
+            <div className="mt-3 rounded-2xl border-2 border-gold/40 bg-gradient-to-br from-gold/10 to-cta/5 p-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-xs font-semibold text-gold-foreground/80 uppercase tracking-wide">
+                    {quantity === 3 ? "🎁 Buy 2 Get 1 Free" : "🎉 Bundle-Rabatt"}
+                  </p>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="font-serif text-3xl text-cta tracking-tight">
+                      €{bundleTotal.toFixed(2).replace(".", ",")}
+                    </span>
+                    <span className="text-base text-muted-foreground line-through">
+                      €{subtotal.toFixed(2).replace(".", ",")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-foreground/70 mt-0.5">
+                    Du sparst zusätzlich <strong>€{bundleDiscount.toFixed(2).replace(".", ",")}</strong>{" "}
+                    im Bundle
+                  </p>
+                </div>
+                <span className="bg-gold/20 text-gold-foreground border border-gold/40 rounded-full px-3 py-1 text-sm font-bold">
+                  −{Math.round((bundleDiscount / subtotal) * 100)}%
+                </span>
+              </div>
+            </div>
           )}
 
           {/* Zusammenfassung der gewählten Farben */}

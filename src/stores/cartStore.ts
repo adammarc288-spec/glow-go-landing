@@ -17,11 +17,13 @@ interface CartStore {
   items: CartItem[];
   cartId: string | null;
   checkoutUrl: string | null;
+  discountCodes: string[];
   isLoading: boolean;
   isSyncing: boolean;
   addItem: (item: Omit<CartItem, "lineId">) => Promise<void>;
   updateQuantity: (variantId: string, quantity: number) => Promise<void>;
   removeItem: (variantId: string) => Promise<void>;
+  applyDiscountCodes: (codes: string[]) => Promise<void>;
   clearCart: () => void;
   syncCart: () => Promise<void>;
   getCheckoutUrl: () => string | null;
@@ -59,6 +61,14 @@ const CART_LINES_UPDATE_MUTATION = `
 const CART_LINES_REMOVE_MUTATION = `
   mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) { cart { id } userErrors { field message } }
+  }
+`;
+const CART_DISCOUNT_CODES_UPDATE_MUTATION = `
+  mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+      cart { id discountCodes { code applicable } }
+      userErrors { field message }
+    }
   }
 `;
 
@@ -135,6 +145,7 @@ export const useCartStore = create<CartStore>()(
       items: [],
       cartId: null,
       checkoutUrl: null,
+      discountCodes: [],
       isLoading: false,
       isSyncing: false,
 
@@ -223,8 +234,35 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
-      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
+      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null, discountCodes: [] }),
       getCheckoutUrl: () => get().checkoutUrl,
+
+      applyDiscountCodes: async (codes) => {
+        const { cartId, discountCodes } = get();
+        // Avoid redundant calls
+        const same =
+          codes.length === discountCodes.length &&
+          codes.every((c, i) => c === discountCodes[i]);
+        if (same) return;
+        if (!cartId) {
+          set({ discountCodes: codes });
+          return;
+        }
+        try {
+          const data = await storefrontApiRequest(CART_DISCOUNT_CODES_UPDATE_MUTATION, {
+            cartId,
+            discountCodes: codes,
+          });
+          const errs: UserError[] = data?.data?.cartDiscountCodesUpdate?.userErrors || [];
+          if (errs.length > 0) {
+            console.error("Discount apply failed:", errs);
+            return;
+          }
+          set({ discountCodes: codes });
+        } catch (e) {
+          console.error("applyDiscountCodes failed", e);
+        }
+      },
 
       syncCart: async () => {
         const { cartId, isSyncing, clearCart } = get();
@@ -249,6 +287,7 @@ export const useCartStore = create<CartStore>()(
         items: state.items,
         cartId: state.cartId,
         checkoutUrl: state.checkoutUrl,
+        discountCodes: state.discountCodes,
       }),
     },
   ),

@@ -7,10 +7,19 @@ import { useCartStore } from "@/stores/cartStore";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const { items, discountCodes, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } =
+    useCartStore();
   const totalItems = items.reduce((s, i) => s + i.quantity, 0);
-  const totalPrice = items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0);
+  const subtotal = items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0);
   const currency = items[0]?.price.currencyCode ?? "EUR";
+
+  // Bundle-Rabatt aus angewendeten Codes berechnen (Anzeige im Drawer)
+  const bundleDiscount = discountCodes.includes("BUNDLE3")
+    ? 29.95
+    : discountCodes.includes("BUNDLE2")
+      ? 9.95
+      : 0;
+  const totalPrice = Math.max(0, subtotal - bundleDiscount);
 
   useEffect(() => {
     if (isOpen) syncCart();
@@ -108,10 +117,28 @@ export const CartDrawer = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex-shrink-0 space-y-4 pt-4 border-t bg-background">
+              <div className="flex-shrink-0 space-y-3 pt-4 border-t bg-background">
+                {bundleDiscount > 0 && (
+                  <>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Zwischensumme</span>
+                      <span className="text-muted-foreground line-through">
+                        {subtotal.toFixed(2)} {currency}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gold font-medium">
+                        🎁 Bundle-Rabatt ({discountCodes.join(", ")})
+                      </span>
+                      <span className="text-gold font-semibold">
+                        −{bundleDiscount.toFixed(2)} {currency}
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-medium">Zwischensumme</span>
-                  <span className="text-xl font-serif font-semibold">
+                  <span className="text-lg font-medium">Gesamt</span>
+                  <span className="text-xl font-serif font-semibold text-cta">
                     {totalPrice.toFixed(2)} {currency}
                   </span>
                 </div>
