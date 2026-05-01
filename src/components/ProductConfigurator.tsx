@@ -8,15 +8,16 @@ import { CountdownTimer } from "./CountdownTimer";
 // ─── ANLEITUNG: Ersetze die URLs hier mit deinen echten Shopify-Bildern pro Farbe ───
 // Gehe in Shopify Admin → Produkte → Varianten → lade pro Farbe ein Bild hoch
 // Dann kopiere die CDN-URL und trage sie hier ein.
+// Echte Variant-Bilder aus Shopify (Fallback, falls Storefront-API kein image am Variant liefert)
 const COLOR_IMAGE_MAP: Record<string, string> = {
-  Schwarz:    "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Schwarz:    "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/42147cb6-8991-42f2-82cb-1f1054593ec8_afa33c4a-204d-4a41-8f2e-303e68a9ca1a.jpg?v=1777624605",
+  Königsblau: "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/b1ebc19b-003a-4792-b6bd-8c3a6648c56f.jpg?v=1777624606",
+  Cognac:     "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/84fe9670-efeb-4673-b17b-67a485ca2993.jpg?v=1777624605",
+  Grün:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/6f219139-0c4e-4614-8d3f-0c1983aa4b0f_98a565a8-5950-4058-a20d-98818a406439.jpg?v=1777624605",
+  Grau:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/272c3051-d869-4063-b2ca-0b87544f13d7.jpg?v=1777624605",
   Rosa:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
-  Rot:        "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
-  Königsblau: "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
-  Grau:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
-  Cognac:     "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
-  Gelb:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
-  Grün:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Rot:        "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/d59c4869-166d-40b7-80f1-cea725539111.jpg?v=1777624605",
+  Gelb:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/f342a474-bb9d-4cdd-ba22-b3fb2515c233_f3168d2a-a802-4aff-be3e-584d33a54d7e.jpg?v=1777624606",
 };
 
 const colorSwatches: Record<string, { dot: string; emoji: string; isNew?: boolean }> = {
@@ -48,16 +49,15 @@ export function ProductConfigurator({ product }: Props) {
 
   const selectedVariant = useMemo(
     () =>
-      variants.find((v) => v.selectedOptions.some((o) => o.value === selectedColor)) ??
-      variants[0],
+      variants.find((v) =>
+        v.selectedOptions.some((o) => o.name === "Farbe" && o.value === selectedColor),
+      ) ?? variants[0],
     [variants, selectedColor],
   );
 
-  // ─── FIX: Bild wechseln wenn Farbe geändert wird ───
+  // Bei Farbwechsel: passendes Bild aktivieren (Varianten-Bild → Map → 0)
   useEffect(() => {
     if (!selectedColor) return;
-
-    // 1. Versuche Varianten-Bild aus Shopify
     if (selectedVariant?.image?.url) {
       const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
       if (idx >= 0) {
@@ -65,20 +65,19 @@ export function ProductConfigurator({ product }: Props) {
         return;
       }
     }
-
-    // 2. Fallback: COLOR_IMAGE_MAP
     const fallbackUrl = COLOR_IMAGE_MAP[selectedColor];
     if (fallbackUrl) {
       const idx = images.findIndex((img) => img.url === fallbackUrl);
-      setActiveImage(idx >= 0 ? idx : 0);
+      if (idx >= 0) setActiveImage(idx);
     }
   }, [selectedColor, selectedVariant, images]);
 
-  // Aktuelle Bild-URL (mit Fallback)
+  // Aktuelle Bild-URL: Varianten-Bild > Map > Galerie
   const activeImageUrl = useMemo(() => {
-    if (images[activeImage]?.url) return images[activeImage].url;
-    return COLOR_IMAGE_MAP[selectedColor] ?? images[0]?.url ?? "";
-  }, [activeImage, images, selectedColor]);
+    if (selectedVariant?.image?.url) return selectedVariant.image.url;
+    if (COLOR_IMAGE_MAP[selectedColor]) return COLOR_IMAGE_MAP[selectedColor];
+    return images[activeImage]?.url ?? images[0]?.url ?? "";
+  }, [selectedVariant, selectedColor, activeImage, images]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
