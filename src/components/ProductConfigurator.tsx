@@ -85,29 +85,31 @@ export function ProductConfigurator({ product }: Props) {
     [variants, selectedColor],
   );
 
-  // Bei Farbwechsel: passendes Bild aktivieren (Varianten-Bild → Map → 0)
+  // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild)
   useEffect(() => {
     if (!selectedColor) return;
     setUserPickedImage(false);
-    if (selectedVariant?.image?.url) {
-      const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
+    const mapUrl = COLOR_IMAGE_MAP[selectedColor];
+    if (mapUrl) {
+      const idx = images.findIndex((img) => img.url === mapUrl);
       if (idx >= 0) {
         setActiveImage(idx);
         return;
       }
     }
-    const fallbackUrl = COLOR_IMAGE_MAP[selectedColor];
-    if (fallbackUrl) {
-      const idx = images.findIndex((img) => img.url === fallbackUrl);
+    if (selectedVariant?.image?.url) {
+      const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
       if (idx >= 0) setActiveImage(idx);
     }
   }, [selectedColor, selectedVariant, images]);
 
-  // Aktuelle Bild-URL: User-Auswahl > Varianten-Bild > Map > Galerie
+  // Aktuelle Bild-URL: User-Auswahl > Map > Varianten-Bild > Galerie
   const activeImageUrl = useMemo(() => {
     if (userPickedImage) return images[activeImage]?.url ?? images[0]?.url ?? "";
+    const mapUrl = COLOR_IMAGE_MAP[selectedColor];
+    if (mapUrl && images.some((img) => img.url === mapUrl)) return mapUrl;
+    if (mapUrl) return mapUrl;
     if (selectedVariant?.image?.url) return selectedVariant.image.url;
-    if (COLOR_IMAGE_MAP[selectedColor]) return COLOR_IMAGE_MAP[selectedColor];
     return images[activeImage]?.url ?? images[0]?.url ?? "";
   }, [userPickedImage, selectedVariant, selectedColor, activeImage, images]);
 
