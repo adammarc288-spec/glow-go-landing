@@ -115,8 +115,23 @@ export function ProductConfigurator({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const isLoading = useCartStore((s) => s.isLoading);
 
+  const allColors = useMemo(
+    () => [selectedColor, ...extraColors],
+    [selectedColor, extraColors],
+  );
+
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
+    const attributes =
+      quantity > 1
+        ? [
+            { key: "Farben (alle Taschen)", value: allColors.join(", ") },
+            ...extraColors.map((c, i) => ({
+              key: `Tasche ${i + 2} – Farbe`,
+              value: c,
+            })),
+          ]
+        : [];
     await addItem({
       product,
       variantId: selectedVariant.id,
@@ -124,7 +139,13 @@ export function ProductConfigurator({ product }: Props) {
       price: selectedVariant.price,
       quantity,
       selectedOptions: selectedVariant.selectedOptions,
+      attributes,
     });
+  };
+
+  const handleQuantityChange = (q: number) => {
+    setQuantity(q);
+    if (q > 1) setColorModalOpen(true);
   };
 
   const colorOption = node.options.find((o) => o.name === "Farbe");
