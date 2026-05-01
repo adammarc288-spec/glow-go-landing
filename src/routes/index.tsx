@@ -14,8 +14,11 @@ import { useCartSync } from "@/hooks/useCartSync";
 import { useProduct } from "@/hooks/useProduct";
 import { useCartStore } from "@/stores/cartStore";
 
-import heroImage from "@/assets/hero-lifestyle.jpg";
 import giftSet from "@/assets/gift-set.jpg";
+
+// Hero shows the actual Rosa/Pink TouchCarry product image from the connected Shopify store
+const heroImage =
+  "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -127,13 +130,13 @@ function Hero({ onShopClick }: { onShopClick: () => void }) {
 
           <div className="relative fade-up">
             <div className="absolute -inset-6 bg-gradient-rose opacity-30 blur-3xl rounded-full" />
-            <div className="relative aspect-[4/5] md:aspect-[5/6] rounded-3xl overflow-hidden shadow-elegant">
+            <div className="relative aspect-[4/5] md:aspect-[5/6] rounded-3xl overflow-hidden shadow-elegant bg-gradient-soft-rose">
               <img
                 src={heroImage}
-                alt="Frau in der Stadt mit Glow & Go Touchscreen-Umhängetasche"
-                className="w-full h-full object-cover"
-                width={1920}
-                height={1080}
+                alt="Glow & Go™ Touchscreen Umhängetasche in Rosa"
+                className="w-full h-full object-contain p-6 md:p-10"
+                width={800}
+                height={800}
               />
               <div className="absolute inset-0 bg-gradient-hero pointer-events-none" />
             </div>

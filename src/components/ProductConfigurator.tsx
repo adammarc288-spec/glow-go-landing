@@ -76,9 +76,10 @@ export function ProductConfigurator({ product }: Props) {
         <div className="aspect-square bg-card rounded-3xl overflow-hidden shadow-soft">
           {images[activeImage] && (
             <img
+              key={images[activeImage].url}
               src={images[activeImage].url}
-              alt={images[activeImage].altText ?? node.title}
-              className="w-full h-full object-cover"
+              alt={images[activeImage].altText ?? `${node.title} – ${selectedColor}`}
+              className="w-full h-full object-cover animate-fade-in"
               loading="lazy"
             />
           )}
