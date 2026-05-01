@@ -54,8 +54,11 @@ export function ProductConfigurator({ product }: Props) {
     return opt?.values?.[0] ?? "";
   });
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState(0);
-  const [userPickedImage, setUserPickedImage] = useState(false);
+  const [activeImageUrl, setActiveImageUrl] = useState<string>(() => {
+    const opt = node.options.find((o) => o.name === "Farbe") ?? node.options[0];
+    const firstColor = opt?.values?.[0] ?? "";
+    return COLOR_IMAGE_MAP[firstColor] ?? images[0]?.url ?? "";
+  });
   const [extraColors, setExtraColors] = useState<string[]>([]);
   const [colorModalOpen, setColorModalOpen] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
