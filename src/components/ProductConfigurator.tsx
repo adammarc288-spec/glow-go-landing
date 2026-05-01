@@ -49,8 +49,9 @@ export function ProductConfigurator({ product }: Props) {
 
   const selectedVariant = useMemo(
     () =>
-      variants.find((v) => v.selectedOptions.some((o) => o.value === selectedColor)) ??
-      variants[0],
+      variants.find((v) =>
+        v.selectedOptions.some((o) => o.name === "Farbe" && o.value === selectedColor),
+      ) ?? variants[0],
     [variants, selectedColor],
   );
 
