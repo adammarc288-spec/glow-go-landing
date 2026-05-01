@@ -266,7 +266,7 @@ export function ProductConfigurator({ product }: Props) {
             {[1, 2, 3].map((q) => (
               <button
                 key={q}
-                onClick={() => setQuantity(q)}
+                onClick={() => handleQuantityChange(q)}
                 className={`px-6 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
                   quantity === q ? "bg-cta text-cta-foreground" : "hover:bg-muted"
                 }`}
@@ -284,6 +284,34 @@ export function ProductConfigurator({ product }: Props) {
             <p className="mt-2 text-xs text-gold flex items-center gap-1.5 font-medium">
               <Gift className="h-3.5 w-3.5" /> 🎁 Buy 2 Get 1 Free – die 3. Tasche GRATIS
             </p>
+          )}
+
+          {/* Zusammenfassung der gewählten Farben */}
+          {quantity > 1 && extraColors.length > 0 && (
+            <div className="mt-3 rounded-2xl border border-border bg-muted/40 p-3 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <p className="font-medium">Deine {quantity} Taschen:</p>
+                  <ul className="text-xs text-muted-foreground space-y-0.5">
+                    <li>1. Tasche: <span className="font-semibold text-foreground">{selectedColor}</span></li>
+                    {extraColors.map((c, i) => (
+                      <li key={i}>
+                        {i + 2}. Tasche: <span className="font-semibold text-foreground">{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setColorModalOpen(true)}
+                  className="rounded-full"
+                >
+                  Bearbeiten
+                </Button>
+              </div>
+            </div>
           )}
         </div>
 
