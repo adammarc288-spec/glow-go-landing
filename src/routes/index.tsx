@@ -53,7 +53,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Die smarte Umhängetasche mit Touchscreen-Fenster. Über 2.300 begeisterte Kundinnen.",
+          "Die smarte Umhängetasche mit Touchscreen-Fenster. RFID-Schutz. 30 Tage Rückgabe. Versand DE/AT/CH.",
       },
       { property: "og:image", content: heroImage },
       { property: "og:type", content: "website" },
@@ -113,7 +113,7 @@ function Hero({ onShopClick }: { onShopClick: () => void }) {
           <div className="fade-up text-center lg:text-left">
             <span className="inline-flex items-center gap-2 bg-gold/15 border border-gold/30 text-foreground/80 rounded-full px-4 py-1.5 text-xs font-medium tracking-wide">
               <Sparkles className="h-3.5 w-3.5 text-gold" />
-              Neue Kollektion · Made in Germany
+              Neue Kollektion · Jetzt verfügbar
             </span>
             <h1 className="mt-5 font-serif text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05] text-balance">
               Dein Handy. <br className="hidden md:block" />
@@ -139,7 +139,7 @@ function Hero({ onShopClick }: { onShopClick: () => void }) {
 
             <div className="mt-7 flex items-center gap-2 justify-center lg:justify-start text-sm text-foreground/75">
               <span className="text-gold">⭐⭐⭐⭐⭐</span>
-              <span>Über 2.300 Kundinnen lieben Glow & Go™</span>
+              <span>Smarte Frauen wählen Glow & Go™</span>
             </div>
 
             <div className="mt-6">
@@ -245,7 +245,7 @@ function GiftBanner({ onShopClick }: { onShopClick: () => void }) {
       compareAt: "€89,85",
       badge: "⭐ BESTES ANGEBOT",
       perks: [
-        "✅ Gratis Express-Versand",
+        "✅ Gratis Versand",
         "✅ 3 verschiedene Farben",
         "🎁 Die 3. Tasche GRATIS",
         "✅ Du sparst €29,95",
@@ -439,35 +439,8 @@ function UseCases() {
 }
 
 function Reviews() {
-  // Per policy: no fake reviews. Empty review structure with placeholder.
-  return (
-    <Section id="reviews">
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <h2 className="font-serif text-4xl md:text-5xl tracking-tight">Kundenbewertungen</h2>
-        <div className="mt-3 flex items-center justify-center gap-2 text-foreground/70">
-          <span className="text-gold text-xl">☆☆☆☆☆</span>
-          <span className="text-sm">Noch keine verifizierten Bewertungen</span>
-        </div>
-        <p className="mt-3 text-sm text-muted-foreground max-w-md mx-auto">
-          Sei eine der ersten Kundinnen und teile deine Erfahrung mit Glow & Go™.
-        </p>
-      </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-card border border-dashed border-border rounded-3xl p-6">
-            <div className="flex items-center gap-1 text-muted-foreground/50 mb-3">
-              {[...Array(5)].map((_, j) => (
-                <Star key={j} className="h-4 w-4" />
-              ))}
-            </div>
-            <p className="text-sm text-muted-foreground italic">
-              Noch keine Bewertung vorhanden.
-            </p>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
+  // Reviews werden angezeigt sobald erste Käufer bewertet haben
+  return null;
 }
 
 function GiftReminder({ onShopClick }: { onShopClick: () => void }) {
@@ -523,7 +496,7 @@ function FAQ() {
     },
     {
       q: "Wie lange dauert die Lieferung?",
-      a: "3–7 Werktage nach DE/AT/CH. Express-Versand in 1–3 Tagen möglich.",
+      a: "3–7 Werktage nach DE/AT/CH.",
     },
     {
       q: "Was ist das Gratis-Angebot?",
@@ -593,7 +566,7 @@ function FinalCTA({ onShopClick }: { onShopClick: () => void }) {
           <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Kostenlos ab 35€</span>
           <span className="flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> 30 Tage Rückgabe</span>
           <span className="flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" /> 3. Tasche gratis im 3er-Set</span>
-          <span className="flex items-center gap-1.5 text-gold">⭐ 4.9 / 5 Sterne</span>
+          
         </div>
       </div>
     </Section>
@@ -639,7 +612,7 @@ function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-6 border-t border-background/10 text-center text-xs text-background/60">
-          © 2026 Glow & Go™. Alle Rechte vorbehalten. Made with <span className="text-rose">❤</span> in Germany
+          © 2026 Glow & Go™. Alle Rechte vorbehalten. Made with <span className="text-rose">❤</span> in Europe
         </div>
       </div>
     </footer>

@@ -5,6 +5,20 @@ import { useCartStore } from "@/stores/cartStore";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
 
+// ─── ANLEITUNG: Ersetze die URLs hier mit deinen echten Shopify-Bildern pro Farbe ───
+// Gehe in Shopify Admin → Produkte → Varianten → lade pro Farbe ein Bild hoch
+// Dann kopiere die CDN-URL und trage sie hier ein.
+const COLOR_IMAGE_MAP: Record<string, string> = {
+  Schwarz:    "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Rosa:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Rot:        "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Königsblau: "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Grau:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Cognac:     "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Gelb:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+  Grün:       "https://cdn.shopify.com/s/files/1/0993/5198/6560/files/19edccb2-cfbb-4ccc-b63e-bb8d86defd24.jpg?v=1777624605",
+};
+
 const colorSwatches: Record<string, { dot: string; emoji: string; isNew?: boolean }> = {
   Rosa:        { dot: "bg-[oklch(0.82_0.07_10)]",   emoji: "🌸" },
   Rot:         { dot: "bg-[oklch(0.55_0.20_25)]",   emoji: "❤️" },
@@ -39,12 +53,32 @@ export function ProductConfigurator({ product }: Props) {
     [variants, selectedColor],
   );
 
-  // Auto-switch the gallery to the variant image when color changes
+  // ─── FIX: Bild wechseln wenn Farbe geändert wird ───
   useEffect(() => {
-    if (!selectedVariant?.image?.url) return;
-    const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
-    if (idx >= 0) setActiveImage(idx);
-  }, [selectedVariant, images]);
+    if (!selectedColor) return;
+
+    // 1. Versuche Varianten-Bild aus Shopify
+    if (selectedVariant?.image?.url) {
+      const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
+      if (idx >= 0) {
+        setActiveImage(idx);
+        return;
+      }
+    }
+
+    // 2. Fallback: COLOR_IMAGE_MAP
+    const fallbackUrl = COLOR_IMAGE_MAP[selectedColor];
+    if (fallbackUrl) {
+      const idx = images.findIndex((img) => img.url === fallbackUrl);
+      setActiveImage(idx >= 0 ? idx : 0);
+    }
+  }, [selectedColor, selectedVariant, images]);
+
+  // Aktuelle Bild-URL (mit Fallback)
+  const activeImageUrl = useMemo(() => {
+    if (images[activeImage]?.url) return images[activeImage].url;
+    return COLOR_IMAGE_MAP[selectedColor] ?? images[0]?.url ?? "";
+  }, [activeImage, images, selectedColor]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
@@ -71,14 +105,14 @@ export function ProductConfigurator({ product }: Props) {
 
   return (
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-      {/* Image gallery */}
+      {/* Bildergalerie */}
       <div>
         <div className="aspect-square bg-card rounded-3xl overflow-hidden shadow-soft">
-          {images[activeImage] && (
+          {activeImageUrl && (
             <img
-              key={images[activeImage].url}
-              src={images[activeImage].url}
-              alt={images[activeImage].altText ?? `${node.title} – ${selectedColor}`}
+              key={activeImageUrl}
+              src={activeImageUrl}
+              alt={`Glow & Go™ – ${selectedColor}`}
               className="w-full h-full object-cover animate-fade-in"
               loading="lazy"
             />
@@ -101,12 +135,8 @@ export function ProductConfigurator({ product }: Props) {
         )}
       </div>
 
-      {/* Configuration */}
+      {/* Konfiguration */}
       <div className="lg:pt-4">
-        <div className="flex items-center gap-2 text-gold text-sm font-medium mb-3">
-          <span>⭐⭐⭐⭐⭐</span>
-          <span className="text-foreground/70">4.9 / 5</span>
-        </div>
         <h2 className="font-serif text-4xl md:text-5xl tracking-tight text-balance">
           {node.title}
         </h2>
@@ -115,7 +145,7 @@ export function ProductConfigurator({ product }: Props) {
           RFID-Schutz und sieben durchdachte Fächer.
         </p>
 
-        {/* Price */}
+        {/* Preis */}
         <div className="mt-7 flex items-end gap-4 flex-wrap">
           <span className="font-serif text-5xl md:text-6xl text-cta tracking-tight">
             €{price.toFixed(2).replace(".", ",")}
@@ -141,12 +171,12 @@ export function ProductConfigurator({ product }: Props) {
           <CountdownTimer className="text-cta font-semibold text-lg" />
         </div>
 
-        {/* Color picker */}
+        {/* Farbauswahl */}
         {colorOption && (
           <div className="mt-7">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium">
-                Farbe: <span className="text-muted-foreground">{selectedColor}</span>
+                Farbe: <span className="text-muted-foreground font-semibold">{selectedColor}</span>
               </span>
             </div>
             <div className="flex flex-wrap gap-3">
@@ -157,10 +187,11 @@ export function ProductConfigurator({ product }: Props) {
                   <button
                     key={value}
                     onClick={() => setSelectedColor(value)}
-                    className={`relative group flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 border transition-all ${
+                    aria-label={`Farbe ${value} wählen`}
+                    className={`relative group flex flex-col items-center gap-1.5 rounded-2xl px-3 py-2 border transition-all cursor-pointer ${
                       isSelected
-                        ? "border-cta bg-cta/5"
-                        : "border-border hover:border-cta/50"
+                        ? "border-cta bg-cta/5 shadow-sm"
+                        : "border-border hover:border-cta/50 hover:bg-muted/50"
                     }`}
                   >
                     {swatch?.isNew && (
@@ -171,7 +202,7 @@ export function ProductConfigurator({ product }: Props) {
                     <span
                       className={`w-8 h-8 rounded-full ring-2 ring-offset-2 ring-offset-background transition-all ${
                         swatch?.dot ?? "bg-muted"
-                      } ${isSelected ? "ring-cta" : "ring-transparent"}`}
+                      } ${isSelected ? "ring-cta scale-110" : "ring-transparent"}`}
                     />
                     <span className="text-xs font-medium">{value}</span>
                   </button>
@@ -181,7 +212,7 @@ export function ProductConfigurator({ product }: Props) {
           </div>
         )}
 
-        {/* Quantity */}
+        {/* Menge */}
         <div className="mt-6">
           <span className="text-sm font-medium mb-2 block">Menge</span>
           <div className="inline-flex border border-border rounded-full overflow-hidden">
@@ -189,7 +220,7 @@ export function ProductConfigurator({ product }: Props) {
               <button
                 key={q}
                 onClick={() => setQuantity(q)}
-                className={`px-6 py-2.5 text-sm font-medium transition-colors ${
+                className={`px-6 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
                   quantity === q ? "bg-cta text-cta-foreground" : "hover:bg-muted"
                 }`}
               >
@@ -209,7 +240,7 @@ export function ProductConfigurator({ product }: Props) {
           )}
         </div>
 
-        {/* CTA */}
+        {/* CTA-Button */}
         <Button
           onClick={handleAddToCart}
           disabled={isLoading || !selectedVariant}
@@ -222,7 +253,7 @@ export function ProductConfigurator({ product }: Props) {
           )}
         </Button>
 
-        {/* Feature bullets */}
+        {/* Feature-Liste */}
         <ul className="mt-6 grid grid-cols-1 gap-2.5 text-sm">
           {[
             { i: <Smartphone className="h-4 w-4" />, t: "Für alle Smartphones bis 6,7 Zoll" },
@@ -239,7 +270,7 @@ export function ProductConfigurator({ product }: Props) {
           ))}
         </ul>
 
-        {/* Payment icons */}
+        {/* Zahlungsmethoden */}
         <div className="mt-6 flex items-center gap-2 flex-wrap">
           <span className="text-xs text-muted-foreground mr-1">Zahlung:</span>
           {["Klarna", "PayPal", "Visa", "Mastercard", "SEPA"].map((p) => (
@@ -251,8 +282,6 @@ export function ProductConfigurator({ product }: Props) {
             </span>
           ))}
         </div>
-
-        <p className="mt-4 text-xs text-muted-foreground">Currency: {currency}</p>
       </div>
     </div>
   );
