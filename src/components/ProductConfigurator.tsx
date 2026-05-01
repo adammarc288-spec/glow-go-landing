@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, ShieldCheck, Smartphone, Briefcase, Link2, Gift, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useCartStore } from "@/stores/cartStore";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
