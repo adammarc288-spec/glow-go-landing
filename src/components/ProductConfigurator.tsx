@@ -54,6 +54,7 @@ export function ProductConfigurator({ product }: Props) {
     return opt?.values?.[0] ?? "";
   });
   const [quantity, setQuantity] = useState(1);
+  const [isManualImageSelection, setIsManualImageSelection] = useState(false);
   const [activeImageUrl, setActiveImageUrl] = useState<string>(() => {
     const opt = node.options.find((o) => o.name === "Farbe") ?? node.options[0];
     const firstColor = opt?.values?.[0] ?? "";
@@ -61,7 +62,7 @@ export function ProductConfigurator({ product }: Props) {
       variants.find((v) =>
         v.selectedOptions.some((o) => o.name === "Farbe" && o.value === firstColor),
       )?.image?.url ?? "";
-    return firstVariantImage || COLOR_IMAGE_MAP[firstColor] || images[0]?.url || "";
+    return COLOR_IMAGE_MAP[firstColor] || firstVariantImage || images[0]?.url || "";
   });
   const [extraColors, setExtraColors] = useState<string[]>([]);
   const [colorModalOpen, setColorModalOpen] = useState(false);
@@ -92,23 +93,24 @@ export function ProductConfigurator({ product }: Props) {
     [variants, selectedColor],
   );
 
-  // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild)
+  // Bei Farbwechsel: passendes Bild aktivieren (COLOR_IMAGE_MAP > Varianten-Bild),
+  // aber manuelle Thumbnail-Auswahl nicht überschreiben.
   useEffect(() => {
-    if (!selectedColor) return;
-    if (selectedVariant?.image?.url) {
-      setActiveImageUrl(selectedVariant.image.url);
-      return;
-    }
+    if (!selectedColor || isManualImageSelection) return;
     const mapUrl = COLOR_IMAGE_MAP[selectedColor];
     if (mapUrl) {
       setActiveImageUrl(mapUrl);
+      return;
+    }
+    if (selectedVariant?.image?.url) {
+      setActiveImageUrl(selectedVariant.image.url);
       return;
     }
     if (images[0]?.url) {
       setActiveImageUrl(images[0].url);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedColor, selectedVariant?.image?.url]);
+  }, [selectedColor, selectedVariant?.image?.url, isManualImageSelection]);
 
   const activeImage = useMemo(() => {
     const idx = images.findIndex((img) => img.url === activeImageUrl);
@@ -197,20 +199,26 @@ export function ProductConfigurator({ product }: Props) {
                 const next = dx < 0
                   ? (safeIdx + 1) % images.length
                   : (safeIdx - 1 + images.length) % images.length;
-                if (images[next]) setActiveImageUrl(images[next].url);
+                if (images[next]) {
+                  setIsManualImageSelection(true);
+                  setActiveImageUrl(images[next].url);
+                }
               }
             }}
-            className="grid w-full max-w-[350px] aspect-square max-h-[350px] place-items-center mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
+            className="relative block w-full max-w-[350px] aspect-square max-h-[350px] mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
             aria-label="Bild vergrößern"
           >
             {activeImageUrl && (
-              <img
-                key={activeImageUrl}
-                src={activeImageUrl}
-                alt={`Glow & Go™ – ${selectedColor}`}
-                className="block w-auto h-auto max-w-full max-h-full object-contain object-center animate-fade-in"
-                loading="lazy"
-              />
+              <span className="absolute inset-0 flex items-center justify-center p-2">
+                <img
+                  key={activeImageUrl}
+                  src={activeImageUrl}
+                  alt={`Glow & Go™ – ${selectedColor}`}
+                  className="block w-full h-full object-contain object-center animate-fade-in"
+                  style={{ objectPosition: "center center" }}
+                  loading="lazy"
+                />
+              </span>
             )}
           </button>
 
@@ -223,7 +231,10 @@ export function ProductConfigurator({ product }: Props) {
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
                   const prev = (safeIdx - 1 + images.length) % images.length;
-                  if (images[prev]) setActiveImageUrl(images[prev].url);
+                   if (images[prev]) {
+                     setIsManualImageSelection(true);
+                     setActiveImageUrl(images[prev].url);
+                   }
                 }}
                 aria-label="Vorheriges Bild"
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -237,7 +248,10 @@ export function ProductConfigurator({ product }: Props) {
                   const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
                   const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
                   const next = (safeIdx + 1) % images.length;
-                  if (images[next]) setActiveImageUrl(images[next].url);
+                   if (images[next]) {
+                     setIsManualImageSelection(true);
+                     setActiveImageUrl(images[next].url);
+                   }
                 }}
                 aria-label="Nächstes Bild"
                 className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
@@ -260,9 +274,10 @@ export function ProductConfigurator({ product }: Props) {
               <button
                 key={img.url}
                 type="button"
-                onClick={() => {
-                  setActiveImageUrl(img.url);
-                }}
+                 onClick={() => {
+                   setIsManualImageSelection(true);
+                   setActiveImageUrl(img.url);
+                 }}
                 className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
