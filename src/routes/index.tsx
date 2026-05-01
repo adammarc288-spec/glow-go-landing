@@ -87,7 +87,7 @@ function TrustBadges() {
     { i: <Lock className="h-4 w-4" />, t: "Sicher" },
     { i: <Truck className="h-4 w-4" />, t: "3–7 Tage" },
     { i: <RotateCcw className="h-4 w-4" />, t: "30 Tage" },
-    { i: <Gift className="h-4 w-4" />, t: "Gratis-Geschenk" },
+    { i: <Gift className="h-4 w-4" />, t: "Buy 2 Get 1 Free" },
   ];
   return (
     <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
@@ -162,8 +162,8 @@ function Hero({ onShopClick }: { onShopClick: () => void }) {
             <div className="absolute -bottom-4 -left-4 bg-card border border-border/60 rounded-2xl px-4 py-3 shadow-elegant flex items-center gap-3 max-w-[16rem]">
               <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center text-lg">🎁</div>
               <div>
-                <p className="text-xs font-semibold">Gratis-Geschenk</p>
-                <p className="text-xs text-muted-foreground">bei 2er-Set</p>
+                <p className="text-xs font-semibold">3. Tasche GRATIS</p>
+                <p className="text-xs text-muted-foreground">beim 3er-Set</p>
               </div>
             </div>
           </div>
@@ -592,7 +592,7 @@ function FinalCTA({ onShopClick }: { onShopClick: () => void }) {
           <span className="flex items-center gap-1.5"><Lock className="h-3.5 w-3.5" /> SSL-Verschlüsselt</span>
           <span className="flex items-center gap-1.5"><Truck className="h-3.5 w-3.5" /> Kostenlos ab 35€</span>
           <span className="flex items-center gap-1.5"><RotateCcw className="h-3.5 w-3.5" /> 30 Tage Rückgabe</span>
-          <span className="flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" /> Gratis-Geschenk bei 2er-Set</span>
+          <span className="flex items-center gap-1.5"><Gift className="h-3.5 w-3.5" /> 3. Tasche gratis im 3er-Set</span>
           <span className="flex items-center gap-1.5 text-gold">⭐ 4.9 / 5 Sterne</span>
         </div>
       </div>
