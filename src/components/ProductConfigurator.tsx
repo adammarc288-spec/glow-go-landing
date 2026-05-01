@@ -12,6 +12,7 @@ import {
 import { useCartStore } from "@/stores/cartStore";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
+import { ZoomableImage } from "./ZoomableImage";
 
 // ─── ANLEITUNG: Ersetze die URLs hier mit deinen echten Shopify-Bildern pro Farbe ───
 // Gehe in Shopify Admin → Produkte → Varianten → lade pro Farbe ein Bild hoch
@@ -220,11 +221,7 @@ export function ProductConfigurator({ product }: Props) {
             <DialogDescription>{`Glow & Go™ – ${selectedColor}`}</DialogDescription>
           </DialogHeader>
           {activeImageUrl && (
-            <img
-              src={activeImageUrl}
-              alt={`Glow & Go™ – ${selectedColor}`}
-              className="w-full h-auto max-h-[85vh] object-contain rounded-2xl"
-            />
+            <ZoomableImage src={activeImageUrl} alt={`Glow & Go™ – ${selectedColor}`} />
           )}
         </DialogContent>
       </Dialog>
