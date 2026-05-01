@@ -7,10 +7,19 @@ import { useCartStore } from "@/stores/cartStore";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const { items, discountCodes, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } =
+    useCartStore();
   const totalItems = items.reduce((s, i) => s + i.quantity, 0);
-  const totalPrice = items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0);
+  const subtotal = items.reduce((s, i) => s + parseFloat(i.price.amount) * i.quantity, 0);
   const currency = items[0]?.price.currencyCode ?? "EUR";
+
+  // Bundle-Rabatt aus angewendeten Codes berechnen (Anzeige im Drawer)
+  const bundleDiscount = discountCodes.includes("BUNDLE3")
+    ? 29.95
+    : discountCodes.includes("BUNDLE2")
+      ? 9.95
+      : 0;
+  const totalPrice = Math.max(0, subtotal - bundleDiscount);
 
   useEffect(() => {
     if (isOpen) syncCart();
