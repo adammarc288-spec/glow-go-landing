@@ -10,6 +10,7 @@ export interface CartItem {
   price: { amount: string; currencyCode: string };
   quantity: number;
   selectedOptions: Array<{ name: string; value: string }>;
+  attributes?: Array<{ key: string; value: string }>;
 }
 
 interface CartStore {
@@ -78,7 +79,7 @@ function isCartNotFoundError(errs: UserError[]): boolean {
 
 async function createShopifyCart(item: CartItem) {
   const data = await storefrontApiRequest(CART_CREATE_MUTATION, {
-    input: { lines: [{ quantity: item.quantity, merchandiseId: item.variantId }] },
+    input: { lines: [{ quantity: item.quantity, merchandiseId: item.variantId, attributes: item.attributes ?? [] }] },
   });
   if (data?.data?.cartCreate?.userErrors?.length > 0) {
     console.error("Cart creation failed:", data.data.cartCreate.userErrors);
@@ -94,7 +95,7 @@ async function createShopifyCart(item: CartItem) {
 async function addLineToShopifyCart(cartId: string, item: CartItem) {
   const data = await storefrontApiRequest(CART_LINES_ADD_MUTATION, {
     cartId,
-    lines: [{ quantity: item.quantity, merchandiseId: item.variantId }],
+    lines: [{ quantity: item.quantity, merchandiseId: item.variantId, attributes: item.attributes ?? [] }],
   });
   const userErrors: UserError[] = data?.data?.cartLinesAdd?.userErrors || [];
   if (isCartNotFoundError(userErrors)) return { success: false, cartNotFound: true };

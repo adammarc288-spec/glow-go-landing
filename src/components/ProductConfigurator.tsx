@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, ShieldCheck, Smartphone, Briefcase, Link2, Gift, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useCartStore } from "@/stores/cartStore";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { CountdownTimer } from "./CountdownTimer";
@@ -46,6 +54,25 @@ export function ProductConfigurator({ product }: Props) {
   });
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [extraColors, setExtraColors] = useState<string[]>([]);
+  const [colorModalOpen, setColorModalOpen] = useState(false);
+
+  const colorOptionValues = useMemo(
+    () => node.options.find((o) => o.name === "Farbe")?.values ?? [],
+    [node.options],
+  );
+
+  // Sync extraColors length with quantity (default to main color)
+  useEffect(() => {
+    const needed = Math.max(0, quantity - 1);
+    setExtraColors((prev) => {
+      if (prev.length === needed) return prev;
+      const next = [...prev];
+      while (next.length < needed) next.push(selectedColor);
+      next.length = needed;
+      return next;
+    });
+  }, [quantity, selectedColor]);
 
   const selectedVariant = useMemo(
     () =>
@@ -88,8 +115,23 @@ export function ProductConfigurator({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const isLoading = useCartStore((s) => s.isLoading);
 
+  const allColors = useMemo(
+    () => [selectedColor, ...extraColors],
+    [selectedColor, extraColors],
+  );
+
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
+    const attributes =
+      quantity > 1
+        ? [
+            { key: "Farben (alle Taschen)", value: allColors.join(", ") },
+            ...extraColors.map((c, i) => ({
+              key: `Tasche ${i + 2} – Farbe`,
+              value: c,
+            })),
+          ]
+        : [];
     await addItem({
       product,
       variantId: selectedVariant.id,
@@ -97,7 +139,13 @@ export function ProductConfigurator({ product }: Props) {
       price: selectedVariant.price,
       quantity,
       selectedOptions: selectedVariant.selectedOptions,
+      attributes,
     });
+  };
+
+  const handleQuantityChange = (q: number) => {
+    setQuantity(q);
+    if (q > 1) setColorModalOpen(true);
   };
 
   const colorOption = node.options.find((o) => o.name === "Farbe");
@@ -218,7 +266,7 @@ export function ProductConfigurator({ product }: Props) {
             {[1, 2, 3].map((q) => (
               <button
                 key={q}
-                onClick={() => setQuantity(q)}
+                onClick={() => handleQuantityChange(q)}
                 className={`px-6 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
                   quantity === q ? "bg-cta text-cta-foreground" : "hover:bg-muted"
                 }`}
@@ -236,6 +284,34 @@ export function ProductConfigurator({ product }: Props) {
             <p className="mt-2 text-xs text-gold flex items-center gap-1.5 font-medium">
               <Gift className="h-3.5 w-3.5" /> 🎁 Buy 2 Get 1 Free – die 3. Tasche GRATIS
             </p>
+          )}
+
+          {/* Zusammenfassung der gewählten Farben */}
+          {quantity > 1 && extraColors.length > 0 && (
+            <div className="mt-3 rounded-2xl border border-border bg-muted/40 p-3 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <p className="font-medium">Deine {quantity} Taschen:</p>
+                  <ul className="text-xs text-muted-foreground space-y-0.5">
+                    <li>1. Tasche: <span className="font-semibold text-foreground">{selectedColor}</span></li>
+                    {extraColors.map((c, i) => (
+                      <li key={i}>
+                        {i + 2}. Tasche: <span className="font-semibold text-foreground">{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setColorModalOpen(true)}
+                  className="rounded-full"
+                >
+                  Bearbeiten
+                </Button>
+              </div>
+            </div>
           )}
         </div>
 
@@ -282,6 +358,80 @@ export function ProductConfigurator({ product }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Modal: Farben für zusätzliche Taschen wählen */}
+      <Dialog open={colorModalOpen} onOpenChange={setColorModalOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-2xl">
+              Farben für deine {quantity} Taschen
+            </DialogTitle>
+            <DialogDescription>
+              Wähle für jede zusätzliche Tasche eine Farbe.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-5 mt-2">
+            <div className="rounded-xl border border-border bg-muted/30 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">1. Tasche:</span>{" "}
+              <span className="font-semibold">{selectedColor}</span>
+            </div>
+
+            {extraColors.map((bagColor, bagIdx) => (
+              <div key={bagIdx}>
+                <p className="text-sm font-medium mb-2">
+                  {bagIdx + 2}. Tasche – Farbe wählen
+                </p>
+                <div className="flex flex-wrap gap-2.5">
+                  {colorOptionValues.map((value) => {
+                    const swatch = colorSwatches[value];
+                    const isSelected = value === bagColor;
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() =>
+                          setExtraColors((prev) =>
+                            prev.map((c, i) => (i === bagIdx ? value : c)),
+                          )
+                        }
+                        aria-label={`Tasche ${bagIdx + 2}: Farbe ${value} wählen`}
+                        className={`relative flex flex-col items-center gap-1.5 rounded-2xl px-2.5 py-2 border transition-all cursor-pointer ${
+                          isSelected
+                            ? "border-cta bg-cta/5 shadow-sm"
+                            : "border-border hover:border-cta/50 hover:bg-muted/50"
+                        }`}
+                      >
+                        {swatch?.isNew && (
+                          <span className="absolute -top-2 -right-2 bg-gradient-gold text-[10px] font-semibold px-2 py-0.5 rounded-full shadow-gold">
+                            NEU ✨
+                          </span>
+                        )}
+                        <span
+                          className={`w-7 h-7 rounded-full ring-2 ring-offset-2 ring-offset-background transition-all ${
+                            swatch?.dot ?? "bg-muted"
+                          } ${isSelected ? "ring-cta scale-110" : "ring-transparent"}`}
+                        />
+                        <span className="text-[11px] font-medium">{value}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              type="button"
+              onClick={() => setColorModalOpen(false)}
+              className="w-full h-12 rounded-full bg-cta hover:bg-cta/90 text-cta-foreground font-semibold"
+            >
+              Auswahl bestätigen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
