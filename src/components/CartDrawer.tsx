@@ -5,6 +5,17 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { ShoppingBag, Minus, Plus, Trash2, Loader2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 
+const COLOR_DOT: Record<string, string> = {
+  Rosa: "bg-[oklch(0.82_0.07_10)]",
+  Rot: "bg-[oklch(0.55_0.20_25)]",
+  Schwarz: "bg-[oklch(0.22_0.005_0)]",
+  Königsblau: "bg-[oklch(0.42_0.18_265)]",
+  Grau: "bg-[oklch(0.55_0.01_240)]",
+  Cognac: "bg-[oklch(0.55_0.12_45)]",
+  Gelb: "bg-[oklch(0.85_0.16_95)]",
+  Grün: "bg-[oklch(0.55_0.13_145)]",
+};
+
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { items, discountCodes, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } =
