@@ -175,25 +175,34 @@ export function ProductConfigurator({ product }: Props) {
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
       {/* Bildergalerie */}
       <div>
-        <div className="aspect-square bg-card rounded-3xl overflow-hidden shadow-soft">
+        <button
+          type="button"
+          onClick={() => activeImageUrl && setZoomOpen(true)}
+          className="block w-full aspect-square bg-card rounded-3xl overflow-hidden shadow-soft cursor-zoom-in group"
+          aria-label="Bild vergrößern"
+        >
           {activeImageUrl && (
             <img
               key={activeImageUrl}
               src={activeImageUrl}
               alt={`Glow & Go™ – ${selectedColor}`}
-              className="w-full h-full object-cover animate-fade-in"
+              className="w-full h-full object-cover animate-fade-in transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
           )}
-        </div>
+        </button>
         {images.length > 1 && (
           <div className="grid grid-cols-5 gap-3 mt-4">
             {images.slice(0, 5).map((img, i) => (
               <button
                 key={img.url}
-                onClick={() => setActiveImage(i)}
+                type="button"
+                onClick={() => {
+                  setActiveImage(i);
+                  setUserPickedImage(true);
+                }}
                 className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                  i === activeImage ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
+                  img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
               >
                 <img src={img.url} alt="" className="w-full h-full object-cover" loading="lazy" />
@@ -202,6 +211,23 @@ export function ProductConfigurator({ product }: Props) {
           </div>
         )}
       </div>
+
+      {/* Zoom-Dialog */}
+      <Dialog open={zoomOpen} onOpenChange={setZoomOpen}>
+        <DialogContent className="max-w-4xl p-2 sm:p-4 bg-background">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Produktbild</DialogTitle>
+            <DialogDescription>{`Glow & Go™ – ${selectedColor}`}</DialogDescription>
+          </DialogHeader>
+          {activeImageUrl && (
+            <img
+              src={activeImageUrl}
+              alt={`Glow & Go™ – ${selectedColor}`}
+              className="w-full h-auto max-h-[85vh] object-contain rounded-2xl"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Konfiguration */}
       <div className="lg:pt-4">
