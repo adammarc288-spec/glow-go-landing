@@ -221,11 +221,7 @@ export function ProductConfigurator({ product }: Props) {
             <DialogDescription>{`Glow & Go™ – ${selectedColor}`}</DialogDescription>
           </DialogHeader>
           {activeImageUrl && (
-            <img
-              src={activeImageUrl}
-              alt={`Glow & Go™ – ${selectedColor}`}
-              className="w-full h-auto max-h-[85vh] object-contain rounded-2xl"
-            />
+            <ZoomableImage src={activeImageUrl} alt={`Glow & Go™ – ${selectedColor}`} />
           )}
         </DialogContent>
       </Dialog>
