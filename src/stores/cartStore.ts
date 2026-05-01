@@ -234,8 +234,35 @@ export const useCartStore = create<CartStore>()(
         }
       },
 
-      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
+      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null, discountCodes: [] }),
       getCheckoutUrl: () => get().checkoutUrl,
+
+      applyDiscountCodes: async (codes) => {
+        const { cartId, discountCodes } = get();
+        // Avoid redundant calls
+        const same =
+          codes.length === discountCodes.length &&
+          codes.every((c, i) => c === discountCodes[i]);
+        if (same) return;
+        if (!cartId) {
+          set({ discountCodes: codes });
+          return;
+        }
+        try {
+          const data = await storefrontApiRequest(CART_DISCOUNT_CODES_UPDATE_MUTATION, {
+            cartId,
+            discountCodes: codes,
+          });
+          const errs: UserError[] = data?.data?.cartDiscountCodesUpdate?.userErrors || [];
+          if (errs.length > 0) {
+            console.error("Discount apply failed:", errs);
+            return;
+          }
+          set({ discountCodes: codes });
+        } catch (e) {
+          console.error("applyDiscountCodes failed", e);
+        }
+      },
 
       syncCart: async () => {
         const { cartId, isSyncing, clearCart } = get();
