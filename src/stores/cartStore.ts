@@ -287,6 +287,7 @@ export const useCartStore = create<CartStore>()(
         items: state.items,
         cartId: state.cartId,
         checkoutUrl: state.checkoutUrl,
+        discountCodes: state.discountCodes,
       }),
     },
   ),
