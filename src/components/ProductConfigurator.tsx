@@ -55,11 +55,9 @@ export function ProductConfigurator({ product }: Props) {
     [variants, selectedColor],
   );
 
-  // ─── FIX: Bild wechseln wenn Farbe geändert wird ───
+  // Bei Farbwechsel: passendes Bild aktivieren (Varianten-Bild → Map → 0)
   useEffect(() => {
     if (!selectedColor) return;
-
-    // 1. Versuche Varianten-Bild aus Shopify
     if (selectedVariant?.image?.url) {
       const idx = images.findIndex((img) => img.url === selectedVariant.image!.url);
       if (idx >= 0) {
@@ -67,20 +65,19 @@ export function ProductConfigurator({ product }: Props) {
         return;
       }
     }
-
-    // 2. Fallback: COLOR_IMAGE_MAP
     const fallbackUrl = COLOR_IMAGE_MAP[selectedColor];
     if (fallbackUrl) {
       const idx = images.findIndex((img) => img.url === fallbackUrl);
-      setActiveImage(idx >= 0 ? idx : 0);
+      if (idx >= 0) setActiveImage(idx);
     }
   }, [selectedColor, selectedVariant, images]);
 
-  // Aktuelle Bild-URL (mit Fallback)
+  // Aktuelle Bild-URL: Varianten-Bild > Map > Galerie
   const activeImageUrl = useMemo(() => {
-    if (images[activeImage]?.url) return images[activeImage].url;
-    return COLOR_IMAGE_MAP[selectedColor] ?? images[0]?.url ?? "";
-  }, [activeImage, images, selectedColor]);
+    if (selectedVariant?.image?.url) return selectedVariant.image.url;
+    if (COLOR_IMAGE_MAP[selectedColor]) return COLOR_IMAGE_MAP[selectedColor];
+    return images[activeImage]?.url ?? images[0]?.url ?? "";
+  }, [selectedVariant, selectedColor, activeImage, images]);
 
   const price = parseFloat(selectedVariant?.price.amount ?? "29.95");
   const compareAt = parseFloat(selectedVariant?.compareAtPrice?.amount ?? "49.95");
