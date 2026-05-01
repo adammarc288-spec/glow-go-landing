@@ -176,25 +176,84 @@ export function ProductConfigurator({ product }: Props) {
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
       {/* Bildergalerie */}
       <div>
-        <button
-          type="button"
-          onClick={() => activeImageUrl && setZoomOpen(true)}
-          className="block w-full aspect-square bg-card rounded-3xl overflow-hidden shadow-soft cursor-zoom-in group"
-          aria-label="Bild vergrößern"
-        >
-          {activeImageUrl && (
-            <img
-              key={activeImageUrl}
-              src={activeImageUrl}
-              alt={`Glow & Go™ – ${selectedColor}`}
-              className="w-full h-full object-cover animate-fade-in transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
+        <div className="relative group">
+          <button
+            type="button"
+            onClick={() => activeImageUrl && setZoomOpen(true)}
+            onTouchStart={(e) => {
+              (e.currentTarget as HTMLButtonElement).dataset.tx = String(e.touches[0].clientX);
+            }}
+            onTouchEnd={(e) => {
+              const startX = Number((e.currentTarget as HTMLButtonElement).dataset.tx ?? 0);
+              const endX = e.changedTouches[0].clientX;
+              const dx = endX - startX;
+              if (Math.abs(dx) > 50) {
+                const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
+                const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
+                const next = dx < 0
+                  ? (safeIdx + 1) % images.length
+                  : (safeIdx - 1 + images.length) % images.length;
+                setActiveImage(next);
+                setUserPickedImage(true);
+              }
+            }}
+            className="block w-full aspect-square bg-card rounded-3xl overflow-hidden shadow-soft cursor-zoom-in"
+            aria-label="Bild vergrößern"
+          >
+            {activeImageUrl && (
+              <img
+                key={activeImageUrl}
+                src={activeImageUrl}
+                alt={`Glow & Go™ – ${selectedColor}`}
+                className="w-full h-full object-cover animate-fade-in transition-transform duration-300 hover:scale-105"
+                loading="lazy"
+              />
+            )}
+          </button>
+
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
+                  const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
+                  setActiveImage((safeIdx - 1 + images.length) % images.length);
+                  setUserPickedImage(true);
+                }}
+                aria-label="Vorheriges Bild"
+                className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIdx = images.findIndex((img) => img.url === activeImageUrl);
+                  const safeIdx = currentIdx >= 0 ? currentIdx : activeImage;
+                  setActiveImage((safeIdx + 1) % images.length);
+                  setUserPickedImage(true);
+                }}
+                aria-label="Nächstes Bild"
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-background/80 backdrop-blur shadow-soft flex items-center justify-center hover:bg-background transition-all opacity-90 md:opacity-0 md:group-hover:opacity-100"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs font-medium bg-background/80 backdrop-blur px-3 py-1 rounded-full shadow-soft">
+                {(() => {
+                  const idx = images.findIndex((img) => img.url === activeImageUrl);
+                  return `${(idx >= 0 ? idx : activeImage) + 1} / ${images.length}`;
+                })()}
+              </div>
+            </>
           )}
-        </button>
+        </div>
+
         {images.length > 1 && (
-          <div className="grid grid-cols-5 gap-3 mt-4">
-            {images.slice(0, 5).map((img, i) => (
+          <div className="mt-4 flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x [scrollbar-width:thin]">
+            {images.map((img, i) => (
               <button
                 key={img.url}
                 type="button"
@@ -202,7 +261,7 @@ export function ProductConfigurator({ product }: Props) {
                   setActiveImage(i);
                   setUserPickedImage(true);
                 }}
-                className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
               >
