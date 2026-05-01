@@ -200,7 +200,7 @@ export function ProductConfigurator({ product }: Props) {
                 if (images[next]) setActiveImageUrl(images[next].url);
               }
             }}
-            className="flex w-full max-w-[350px] aspect-square max-h-[350px] items-center justify-center mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
+            className="grid w-full max-w-[350px] aspect-square max-h-[350px] place-items-center mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
             aria-label="Bild vergrößern"
           >
             {activeImageUrl && (
@@ -208,7 +208,7 @@ export function ProductConfigurator({ product }: Props) {
                 key={activeImageUrl}
                 src={activeImageUrl}
                 alt={`Glow & Go™ – ${selectedColor}`}
-                className="w-full h-full max-w-full max-h-full object-contain animate-fade-in"
+                className="block w-auto h-auto max-w-full max-h-full object-contain object-center animate-fade-in"
                 loading="lazy"
               />
             )}
