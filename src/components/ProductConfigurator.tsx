@@ -181,8 +181,8 @@ export function ProductConfigurator({ product }: Props) {
   return (
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
       {/* Bildergalerie */}
-      <div>
-        <div className="relative group">
+      <div className="w-full min-w-0">
+        <div className="relative group w-full">
           <button
             type="button"
             onClick={() => activeImageUrl && setZoomOpen(true)}
@@ -205,7 +205,7 @@ export function ProductConfigurator({ product }: Props) {
                 }
               }
             }}
-            className="relative block w-full max-w-[350px] aspect-square max-h-[350px] mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
+            className="relative block w-full aspect-square mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none overflow-hidden"
             aria-label="Bild vergrößern"
           >
             {activeImageUrl && (
@@ -269,7 +269,7 @@ export function ProductConfigurator({ product }: Props) {
         </div>
 
         {images.length > 1 && (
-          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 -mx-4 px-4 md:mx-0 md:px-0 snap-x [scrollbar-width:thin]">
+          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 snap-x [scrollbar-width:thin] w-full">
             {images.map((img, i) => (
               <button
                 key={img.url}
@@ -278,7 +278,7 @@ export function ProductConfigurator({ product }: Props) {
                    setIsManualImageSelection(true);
                    setActiveImageUrl(img.url);
                  }}
-                className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
+                className={`flex-shrink-0 basis-[calc((100%-36px)/4)] md:basis-20 aspect-square md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
               >
