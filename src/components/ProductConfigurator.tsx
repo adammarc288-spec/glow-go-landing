@@ -269,7 +269,7 @@ export function ProductConfigurator({ product }: Props) {
         </div>
 
         {images.length > 1 && (
-          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 snap-x [scrollbar-width:thin] w-full">
+          <div className="mt-4 flex gap-3 overflow-x-auto pb-2 snap-x [scrollbar-width:thin] w-full max-w-full">
             {images.map((img, i) => (
               <button
                 key={img.url}
