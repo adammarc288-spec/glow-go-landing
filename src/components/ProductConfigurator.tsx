@@ -181,8 +181,8 @@ export function ProductConfigurator({ product }: Props) {
   return (
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
       {/* Bildergalerie */}
-      <div className="w-full min-w-0">
-        <div className="relative group w-full">
+      <div className="w-full min-w-0 max-w-full lg:max-w-full overflow-hidden">
+        <div className="relative group w-full max-w-full">
           <button
             type="button"
             onClick={() => activeImageUrl && setZoomOpen(true)}
