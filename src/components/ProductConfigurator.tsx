@@ -269,7 +269,7 @@ export function ProductConfigurator({ product }: Props) {
         </div>
 
         {images.length > 1 && (
-          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 -mx-4 px-4 md:mx-0 md:px-0 snap-x [scrollbar-width:thin]">
+          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 snap-x [scrollbar-width:thin] w-full">
             {images.map((img, i) => (
               <button
                 key={img.url}
@@ -278,7 +278,7 @@ export function ProductConfigurator({ product }: Props) {
                    setIsManualImageSelection(true);
                    setActiveImageUrl(img.url);
                  }}
-                className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
+                className={`flex-shrink-0 basis-[calc((100%-36px)/4)] md:basis-20 aspect-square md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all snap-start ${
                   img.url === activeImageUrl ? "border-cta" : "border-transparent opacity-70 hover:opacity-100"
                 }`}
               >
