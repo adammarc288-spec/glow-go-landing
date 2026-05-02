@@ -181,8 +181,8 @@ export function ProductConfigurator({ product }: Props) {
   return (
     <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
       {/* Bildergalerie */}
-      <div className="w-full min-w-0">
-        <div className="relative group w-full">
+      <div className="w-full min-w-0 max-w-full lg:max-w-full overflow-hidden">
+        <div className="relative group w-full max-w-full">
           <button
             type="button"
             onClick={() => activeImageUrl && setZoomOpen(true)}
@@ -269,7 +269,7 @@ export function ProductConfigurator({ product }: Props) {
         </div>
 
         {images.length > 1 && (
-          <div className="mt-4 flex gap-3 overflow-x-auto md:overflow-visible pb-2 snap-x [scrollbar-width:thin] w-full">
+          <div className="mt-4 flex gap-3 overflow-x-auto pb-2 snap-x [scrollbar-width:thin] w-full max-w-full">
             {images.map((img, i) => (
               <button
                 key={img.url}
