@@ -205,7 +205,7 @@ export function ProductConfigurator({ product }: Props) {
                 }
               }
             }}
-            className="relative block w-full max-w-[350px] aspect-square max-h-[350px] mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none"
+            className="relative block w-full aspect-square mx-auto bg-card rounded-3xl shadow-soft cursor-zoom-in md:max-w-none md:max-h-none overflow-hidden"
             aria-label="Bild vergrößern"
           >
             {activeImageUrl && (
